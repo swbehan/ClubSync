@@ -1,0 +1,89 @@
+.moto {
+  color: #2a2622;
+  text-align: center;
+  font-size: 2.5rem;
+  margin: 75px auto 0;
+  max-width: 900px;
+  padding: 1rem 2rem;
+  border-radius: 41px;
+  border: 3px solid #d8c9a8;
+  background-color: #f2ede3;
+  animation: slideDown 1.8s ease forwards;
+}
+
+.hero-img-col {
+  margin-top: 2rem;
+  animation: slideDown 2.8s ease forwards;
+}
+
+.hero-img {
+  display: block;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 12px;
+  border: 3px solid #d8c9a8;
+}
+
+.what-is-this {
+  font-size: 2.6rem;
+  text-align: center;
+  color: #c1512d;
+  font-weight: 500;
+  margin-top: 4rem;
+  margin-bottom: 2rem;
+  animation: slideDown 3.8s ease forwards;
+}
+
+.lead-text {
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: #2a2622;
+  margin-bottom: 3rem;
+}
+
+.intro-col {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+
+.role-card {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1.5rem 1rem;
+  background-color: #f2ede3;
+  border-radius: 12px;
+}
+
+.role-title {
+  font-size: 1.85rem;
+  color: #c1512d;
+  margin-bottom: 0.5rem;
+}
+
+.note-text {
+  text-align: center;
+  margin-top: 2rem;
+  font-style: italic;
+  font-size: 1.4rem;
+  color: #6b5f4f;
+}
+
+.cta-row {
+  margin-top: 1.5rem;
+  margin-bottom: 4rem;
+  text-align: center;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

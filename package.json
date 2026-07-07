@@ -1,0 +1,35 @@
+{
+  "name": "group-sync",
+  "version": "1.0.0",
+  "description": "Backend server responsible for user authentication, route handling, HTTP methods and CRUD operations for the web app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "Sean Behan, Julian Leonhardt",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jest": "^29.15.4",
+    "eslint-plugin-prettier": "^5.5.6",
+    "globals": "^17.7.0",
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.14",
+    "prettier": "^3.9.4"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "connect-mongo": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongodb": "^7.4.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  }
+}
