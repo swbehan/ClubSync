@@ -1,9 +1,12 @@
-/* By default on mobile, content spans the whole screen width */
-.app-content-layout {
-  padding: 1rem;
+:root {
+  --navbar-height: 100px;
 }
 
-/* On large screens, offset the content to clear the 250px fixed sidebar */
+.app-content-layout {
+  padding: 1rem;
+  margin-top: var(--navbar-height);
+}
+
 @media (min-width: 992px) {
   .app-content-layout {
     margin-left: 250px;
@@ -17,7 +20,6 @@ body {
   background-color: #f2ede3;
 }
 
-/* Headings */
 h1 {
   font-family: "Oswald", sans-serif;
   font-weight: 600;
@@ -39,7 +41,6 @@ h3 {
   color: #2a2622;
 }
 
-/* Body text */
 p {
   font-family: "Lexend Deca", sans-serif;
   font-weight: 400;
@@ -63,3 +64,9 @@ p {
 .btn:hover {
   background-color: #a8461f;
 }
+
+.btn:active {
+  background-color: #a1431e;
+}
+
+

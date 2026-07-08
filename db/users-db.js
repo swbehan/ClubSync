@@ -23,6 +23,7 @@ function UsersCollection({ collectionName = "users" } = {}) {
         email,
         passwordHash,
         name,
+        role: "member",
         createdAt: new Date(),
       };
       const result = await users.insertOne(newUserDoc);

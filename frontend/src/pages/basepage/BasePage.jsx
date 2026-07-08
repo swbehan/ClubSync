@@ -1,6 +1,7 @@
-import SideBar from "../components/sidebar/SideBar";
+import SideBar from "./sidebar/SideBar.jsx";
+import NavBar from "./navbar/NavBar.jsx";
 import { useState, useEffect } from "react";
-import { UserContext } from "../context/UserContext.jsx";
+import { UserContext } from "../../context/UserContext.jsx";
 
 export default function BasePage({ children }) {
   const [user, setUser] = useState(null);
@@ -30,11 +31,13 @@ export default function BasePage({ children }) {
       <SideBar />
 
       <div className="app-content-layout">
+        <NavBar />
+
         {children}
 
         <footer className="mt-5">
           <hr />
-          <p className="text-center">GroupSync. All Rights Reserved</p>
+          <p className="text-center">ClubSync. All Rights Reserved</p>
         </footer>
       </div>
     </UserContext.Provider>

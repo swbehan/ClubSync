@@ -53,7 +53,12 @@ authRouter.post("/login", (req, res, next) => {
         return next(err);
       }
       return res.json({
-        user: { id: user._id, email: user.email, name: user.name },
+        user: {
+          id: user._id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        },
       });
     });
   })(req, res, next);
@@ -67,6 +72,7 @@ authRouter.get("/user", isAuthenticated, (req, res) => {
     id: req.user._id,
     email: req.user.email,
     name: req.user.name,
+    role: req.user.role,
   };
   res.json({ user: noPasswordUser });
 });

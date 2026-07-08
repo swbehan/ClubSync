@@ -32,12 +32,12 @@ export default function HomePage() {
         </Col>
       </Row>
 
-      <h2 className="what-is-this">That's GroupSync.</h2>
+      <h2 className="what-is-this">That's ClubSync.</h2>
 
       <Row className="justify-content-center gx-3">
         <Col xs={12} md={8} className="intro-col">
           <p className="lead-text">
-            GroupSync replaces the Google Form and spreadsheet routine clubs use
+            ClubSync replaces the Google Form and spreadsheet routine clubs use
             to track dues and events. No more manually checking who's paid
             before letting people sign up. Members join a group, submit their
             dues, and see exactly which events they're eligible for. Treasurers
@@ -61,9 +61,7 @@ export default function HomePage() {
 
       <Row className="justify-content-center cta-row">
         <Col xs="auto">
-          <Button href="/login">
-            Log In
-          </Button>
+          <Button href="/login">Log In</Button>
         </Col>
       </Row>
     </Container>
