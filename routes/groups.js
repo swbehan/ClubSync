@@ -59,7 +59,11 @@ groupsRouter.get("/:id", isAuthenticated, async (req, res) => {
 
 groupsRouter.put("/:id", requireRole("treasurer"), async (req, res) => {
     try {
-        const updated = await groupsCollection.updateGroup(req.params.id, req.body);
+        const { name, active } = req.body;
+        const updates = {};
+        if (name !== undefined) updates.name = name;
+        if (active !== undefined) updates.active = active;
+        const updated = await groupsCollection.updateGroup(req.params.id, updates);
         if (!updated) {
             return res.status(404).json({ message: "Group not found" });
         }

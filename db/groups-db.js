@@ -18,7 +18,7 @@ function GroupsCollection({ collectionName = "groups" } = {}) {
   // Creates a group
   me.createGroup = async ({ name, createdBy }) => { 
     try { 
-
+        await groups.updateMany({ active: true }, { $set: { active: false } });
         const generatedJoinClubId = await generateJoinCode();
         const newClubDoc = { 
             name,
@@ -30,7 +30,7 @@ function GroupsCollection({ collectionName = "groups" } = {}) {
 
         const result = await groups.insertOne(newClubDoc);
         console.log("Registered new Club in MongoDB");
-        return { id: result.insertedId, name}
+        return { id: result.insertedId, name, joinCode: generatedJoinClubId };
     } catch (error) { 
         console.error("Error registering new club", error);
         throw error;

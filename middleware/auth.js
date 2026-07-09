@@ -22,7 +22,7 @@ export const requireRole = (minRole) => {
     }
     const userRank = ROLE_RANK[req.user.role] ?? 0;
     const requiredRank = ROLE_RANK[minRole] ?? 0;
-    if (userRank < requireRank) { 
+    if (userRank < requiredRank) { 
       return res.status(403).json({ message: "Insufficient permissions" });
     }
     next();
