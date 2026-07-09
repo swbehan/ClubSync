@@ -10,6 +10,7 @@ import AboutPage from "./pages/about/AboutPage.jsx";
 import LoginPage from "./pages/auth/login/LoginPage.jsx";
 import RegisterPage from "./pages/auth/register/RegisterPage.jsx";
 import MemberDashboard from "./pages/member/member-dashboard/MemberDashboard.jsx";
+import GroupForm from "./pages/treasurer/group-form/GroupForm.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -29,6 +30,9 @@ createRoot(document.getElementById("root")).render(
               element={<MemberDashboard />}
             />
           </Route>
+
+          {/* Treasurer Role Pages */}
+          <Route path="/treasurer/group-form" element={<GroupForm/>} />
         </Routes>
       </BasePage>
     </BrowserRouter>
