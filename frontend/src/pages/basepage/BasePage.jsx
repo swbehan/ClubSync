@@ -5,6 +5,7 @@ import { UserContext } from "../../context/UserContext.jsx";
 
 export default function BasePage({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // once the base page loads, fetch the current user if applicable
   useEffect(() => {
@@ -20,6 +21,8 @@ export default function BasePage({ children }) {
       } catch (error) {
         console.error("Failed to fetch user:", error);
         setUser(null);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -27,7 +30,7 @@ export default function BasePage({ children }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       <SideBar />
 
       <div className="app-content-layout">

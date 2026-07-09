@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
+import ProtectedRoute from "./pages/auth/ProtectedRoute.jsx";
 import BasePage from "./pages/basepage/BasePage.jsx";
 import HomePage from "./pages/homepage/HomePage.jsx";
 import AboutPage from "./pages/about/AboutPage.jsx";
@@ -22,10 +23,12 @@ createRoot(document.getElementById("root")).render(
           <Route path="/about" element={<AboutPage />} />
 
           {/* Member Role Pages */}
-          <Route
-            path="/member/member-dashboard"
-            element={<MemberDashboard />}
-          />
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/member/member-dashboard"
+              element={<MemberDashboard />}
+            />
+          </Route>
         </Routes>
       </BasePage>
     </BrowserRouter>

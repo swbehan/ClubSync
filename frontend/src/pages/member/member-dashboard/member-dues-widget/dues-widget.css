@@ -1,0 +1,124 @@
+/* ===========================
+     DUES WIDGET CARD
+   ========================= */
+.dues-card {
+  background-color: #f2ede3;
+  border: 3px solid #d8c9a8;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(42, 38, 34, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.dues-card:hover {
+  transform: translateY(-3px);
+}
+
+.dues-card .card-title {
+  font-family: "Oswald", sans-serif;
+  font-style: italic;
+  color: #c1512d;
+  font-size: 1.5rem;
+  text-align: left;
+  margin-bottom: 50px;
+}
+
+.dues-card .card-subtitle {
+  font-family: "Lexend Deca", sans-serif;
+  color: #2a2622;
+  text-align: left;
+  font-size: 2rem;
+}
+
+.dues-card .card-text {
+  font-family: "Lexend Deca", sans-serif;
+  color: #2a2622;
+  text-align: left;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  font-size: 1.3rem;
+}
+
+.dues-card .card-link {
+  color: #c1512d;
+  font-family: "Oswald", sans-serif;
+  font-weight: 500;
+}
+
+.dues-tier-style {
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+}
+
+/* =========================== 
+   DUES INNER CARD 
+   =========================== */
+.dues-inner-card {
+  background-color: #ffffff;
+  border: 1px dashed #c1512d;
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+
+.dues-inner-card .card-body {
+  padding: 1rem;
+}
+
+.inner-card-header {
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: #c1512d; 
+  margin-bottom: 4px;
+}
+
+.inner-card-subheader {
+  font-family: "Oswald", sans-serif;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #2a2622; 
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.inner-card-content {
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 0.9rem;
+  color: #6c757d; 
+}
+
+/* =========================== 
+   DUES STATUS INFO TAG 
+   =========================== */
+
+.status-badge {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  display: inline-block;
+  line-height: 1;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(42, 38, 34, 0.05);
+}
+
+.status-badge.pending {
+  background-color: #d8c9a8; 
+  color: #2a2622;
+}
+
+.status-badge.approved {
+  background-color: #2a2622;
+  color: #f2ede3;
+}
+
+.status-badge.denied,
+.status-badge.not_submitted {
+  background-color: #c1512d;
+  color: #ffffff;
+}

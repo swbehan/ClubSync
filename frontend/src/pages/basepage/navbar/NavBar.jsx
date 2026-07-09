@@ -52,7 +52,7 @@ export default function NavBar() {
                   alt="Logged In Image"
                   className="image-style"
                 />
-                ({user.name})
+                ({`${user.firstName} ${user.lastName}`})
               </Nav.Link>
             </Nav>
           )}

@@ -4,14 +4,21 @@ import mongodb from "mongodb";
 
 const { ObjectId } = mongodb;
 
+const DUES_STATUS = {
+  NOT_SUBMITTED: "not_submitted",
+  PENDING: "pending",
+  APPROVED: "approved",
+  DENIED: "denied",
+};
+
 function UsersCollection({ collectionName = "users" } = {}) {
   const me = {};
 
   const users = connect(collectionName);
 
-  // will reject duplicates with the same email, returns a clean 
-  // object (never the passwordHash) on success, or null if the email is already taken. 
-  me.registerUser = async ({ email, password, name }) => {
+  // will reject duplicates with the same email, returns a clean
+  // object (never the passwordHash) on success, or null if the email is already taken.
+  me.registerUser = async ({ email, password, firstName, lastName }) => {
     try {
       const existingUser = await me.findUserByEmail(email);
       if (existingUser) {
@@ -22,15 +29,41 @@ function UsersCollection({ collectionName = "users" } = {}) {
       const newUserDoc = {
         email,
         passwordHash,
-        name,
+        firstName,
+        lastName,
+        duesStatus: DUES_STATUS.NOT_SUBMITTED,
+        duesTier: "null",
         role: "member",
         createdAt: new Date(),
       };
       const result = await users.insertOne(newUserDoc);
       console.log("Registered new User in MongoDB 📝");
-      return { id: result.insertedId, email, name };
+      return { id: result.insertedId, email, firstName, lastName };
     } catch (error) {
       console.error("Error registering new User", error);
+      throw error;
+    }
+  };
+
+  // will edit the dues status for the user and will update the dues tier to the one the user selected
+  me.submitDues = async (userId, duesTier) => {
+    try {
+      if (!ObjectId.isValid(userId)) return null;
+      const updated = await users.findOneAndUpdate(
+        {
+          duesStatus: { $in: [DUES_STATUS.NOT_SUBMITTED, DUES_STATUS.DENIED] },
+        },
+        {
+          $set: {
+            duesStatus: DUES_STATUS.PENDING,
+            duesTier: duesTier,
+          },
+        },
+        { returnDocument: "after" }
+      );
+      return updated;
+    } catch (error) {
+      console.error("Error submitting dues User", error);
       throw error;
     }
   };

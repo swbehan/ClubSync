@@ -10,15 +10,20 @@ const authRouter = Router();
 // ----------------------------
 authRouter.post("/register", async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, firstName, lastName } = req.body;
 
-    if (!email || !password || !name) {
+    if (!email || !password || !firstName || !lastName) {
       return res
         .status(400)
         .json({ message: "All fields are required to register" });
     }
 
-    const user = await usersCollection.registerUser({ email, password, name });
+    const user = await usersCollection.registerUser({
+      email,
+      password,
+      firstName,
+      lastName,
+    });
     if (!user) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -56,8 +61,11 @@ authRouter.post("/login", (req, res, next) => {
         user: {
           id: user._id,
           email: user.email,
-          name: user.name,
+          firstName: user.firstName,
+          lastName: user.lastName,
           role: user.role,
+          duesStatus: user.duesStatus,
+          duesTier: user.duesTier,
         },
       });
     });
@@ -71,8 +79,11 @@ authRouter.get("/user", isAuthenticated, (req, res) => {
   const noPasswordUser = {
     id: req.user._id,
     email: req.user.email,
-    name: req.user.name,
+    firstName: req.user.firstName,
+    lastName: req.user.lastName,
     role: req.user.role,
+    duesStatus: req.user.duesStatus,
+    duesTier: req.user.duesTier,
   };
   res.json({ user: noPasswordUser });
 });
