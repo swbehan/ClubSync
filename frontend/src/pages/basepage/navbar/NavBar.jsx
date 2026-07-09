@@ -1,9 +1,11 @@
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 import { useUser } from "../../../context/UserContext.jsx";
 import "./navbar.css";
+
+const ROLE_VIEWS = ["member", "treasurer", "admin"];
 
 const NAV_PAGES = {
   guest: [
@@ -15,13 +17,20 @@ const NAV_PAGES = {
     // { to: "/dues-status", label: "Dues" },
     // { to: "/events", label: "Events" },
   ],
-  // treasurer: [ ... ],
-  // admin: [ ... ],
+  treasurer: [
+    { to: "/treasurer/treasurer-dashboard", label: "Dashboard" },
+    { to: "/treasurer/group-form", label: "Group Form" },
+    // { to: "/treasurer/dues-submissions", label: "Dues" },
+  ],
+  admin: [{ to: "/admin/admin-dashboard", label: "Dashboard" }],
 };
 
 export default function NavBar() {
   const { user } = useUser();
-  const pages = NAV_PAGES[user?.role ?? "guest"] ?? NAV_PAGES.guest;
+  const { pathname } = useLocation();
+  const segment = pathname.split("/")[1];
+  const view = ROLE_VIEWS.includes(segment) ? segment : "guest";
+  const pages = NAV_PAGES[view] ?? NAV_PAGES.guest;
 
   return (
     <Navbar expand="lg" className="top-navbar">

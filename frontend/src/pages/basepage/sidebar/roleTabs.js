@@ -1,4 +1,5 @@
 const MEMBER_TAB = {
+    role: "member",
     to: "/member/member-dashboard",
     label: "Member",
     imageSrc: "https://cdn-icons-png.flaticon.com/128/16702/16702685.png",
@@ -6,7 +7,8 @@ const MEMBER_TAB = {
   };
   
   const TREASURER_TAB = {
-    to: "/treasurer-dashboard",
+    role: "treasurer",
+    to: "/treasurer/treasurer-dashboard",
     label: "Treasurer",
     imageSrc: "https://cdn-icons-png.flaticon.com/128/3360/3360459.png",
     alt: "Treasurer View Board Selection",
@@ -14,7 +16,8 @@ const MEMBER_TAB = {
   };
   
   const ADMIN_TAB = {
-    to: "/admin-dashboard",
+    role: "admin",
+    to: "/admin/admin-dashboard",
     label: "Admin",
     imageSrc: "https://cdn-icons-png.flaticon.com/128/6995/6995809.png",
     alt: "Admin View Board Selection",

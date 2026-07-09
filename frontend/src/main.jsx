@@ -11,6 +11,8 @@ import LoginPage from "./pages/auth/login/LoginPage.jsx";
 import RegisterPage from "./pages/auth/register/RegisterPage.jsx";
 import MemberDashboard from "./pages/member/member-dashboard/MemberDashboard.jsx";
 import GroupForm from "./pages/treasurer/group-form/GroupForm.jsx";
+import TreasurerDashboard from "./pages/treasurer/treasurer-dashboard/TreasurerDashboard.jsx";
+import AdminDashboard from "./pages/admin/admindashboard/AdminDashboard.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -32,7 +34,18 @@ createRoot(document.getElementById("root")).render(
           </Route>
 
           {/* Treasurer Role Pages */}
-          <Route path="/treasurer/group-form" element={<GroupForm/>} />
+          <Route element={<ProtectedRoute allow={["treasurer", "admin"]} />}>
+            <Route
+              path="/treasurer/treasurer-dashboard"
+              element={<TreasurerDashboard />}
+            />
+            <Route path="/treasurer/group-form" element={<GroupForm />} />
+          </Route>
+
+          {/* Admin Role Pages */}
+          <Route element={<ProtectedRoute allow={["admin"]} />}>
+            <Route path="/admin/admin-dashboard" element={<AdminDashboard />} />
+          </Route>
         </Routes>
       </BasePage>
     </BrowserRouter>
