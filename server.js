@@ -13,6 +13,7 @@ import passport from "./config/passport.js";
 import authRouter from "./routes/auth.js";
 import duesRouter from "./routes/dues.js";
 import groupsRouter from "./routes/groups.js";
+import eventsRouter from "./routes/events.js"
 
 // ----------------------------
 // SERVER CONSTANTS
@@ -71,6 +72,7 @@ app.use("/", express.static("./frontend/dist"));
 app.use("/api/auth", authRouter);
 app.use("api/dues", duesRouter);
 app.use("/api/groups", groupsRouter);
+app.use("/api/events", eventsRouter);
 
 // ----------------------------
 // SPA CATCH-ALL ROUTING
