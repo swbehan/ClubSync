@@ -13,6 +13,7 @@ import MemberDashboard from "./pages/member/member-dashboard/MemberDashboard.jsx
 import GroupForm from "./pages/treasurer/group-form/GroupForm.jsx";
 import TreasurerDashboard from "./pages/treasurer/treasurer-dashboard/TreasurerDashboard.jsx";
 import AdminDashboard from "./pages/admin/admindashboard/AdminDashboard.jsx";
+import EventList from "./pages/events/event-list/EventList.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -31,6 +32,7 @@ createRoot(document.getElementById("root")).render(
               path="/member/member-dashboard"
               element={<MemberDashboard />}
             />
+            <Route path="/events" element={<EventList />} />
           </Route>
 
           {/* Treasurer Role Pages */}
