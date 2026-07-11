@@ -32,6 +32,7 @@ function UsersCollection({ collectionName = "users" } = {}) {
         firstName,
         lastName,
         duesStatus: DUES_STATUS.NOT_SUBMITTED,
+        groupId: null,
         duesTier: "null",
         role: "member",
         createdAt: new Date(),
@@ -64,6 +65,56 @@ function UsersCollection({ collectionName = "users" } = {}) {
       return updated;
     } catch (error) {
       console.error("Error submitting dues User", error);
+      throw error;
+    }
+  };
+
+  // edit operation on a user document in the users collection that will update the groupId field
+  // so that the user is tied to a club/group and is allowed to view a dashboard
+  me.joinClub = async (userId, groupId) => {
+    try {
+      if (!ObjectId.isValid(userId)) return null;
+      const updated = await users.findOneAndUpdate(
+        { _id: new ObjectId(userId) },
+        { $set: { groupId } },
+        { returnDocument: "after" }
+      );
+      return updated;
+    } catch (error) {
+      console.error("Error trying to join the group via code", error);
+      throw error;
+    }
+  };
+
+  // read operation that will get all the memebers within a group that have paid dues, selected a tier,
+  // and have had their dues submission for approved.
+  me.getDuesStats = async (groupId) => {
+    try {
+      const groupFilter = groupId
+        ? ObjectId.isValid(groupId)
+          ? new ObjectId(groupId)
+          : groupId
+        : { $ne: null };
+      const memberCount = await users.countDocuments({ groupId: groupFilter });
+
+      const rows = await users
+        .aggregate([
+          {
+            $match: {
+              groupId: groupFilter,
+              duesTier: { $in: ["gold", "silver"] },
+              duesStatus: "approved",
+            },
+          },
+          { $group: { _id: "$duesTier", count: { $sum: 1 } } },
+        ])
+        .toArray();
+
+      const gold = rows.find((r) => r._id === "gold")?.count ?? 0;
+      const silver = rows.find((r) => r._id === "silver")?.count ?? 0;
+      return { gold, silver, total: gold + silver, memberCount };
+    } catch (error) {
+      console.error("Error fetching dues stats", error);
       throw error;
     }
   };

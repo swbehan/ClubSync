@@ -64,6 +64,7 @@ authRouter.post("/login", (req, res, next) => {
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
+          groupId: user.groupId,
           duesStatus: user.duesStatus,
           duesTier: user.duesTier,
         },
@@ -82,6 +83,7 @@ authRouter.get("/user", isAuthenticated, (req, res) => {
     firstName: req.user.firstName,
     lastName: req.user.lastName,
     role: req.user.role,
+    groupId: req.user.groupId,
     duesStatus: req.user.duesStatus,
     duesTier: req.user.duesTier,
   };

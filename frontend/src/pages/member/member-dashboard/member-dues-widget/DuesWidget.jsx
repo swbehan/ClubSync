@@ -12,7 +12,7 @@ const DUES_CONTENT_MAP = {
   pending: {
     header: "Awaiting Approval",
     subheader: "Review Pending",
-    context: "An admin is currently verifying your submission.",
+    context: "An treasurer is currently verifying your submission.",
   },
   approved: {
     header: "Account Active",

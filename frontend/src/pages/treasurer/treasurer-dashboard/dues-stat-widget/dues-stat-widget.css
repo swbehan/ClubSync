@@ -1,0 +1,64 @@
+/* ===========================
+   DUES STAT WIDGET
+   =========================== */
+.dues-stat-widget .dues-card {
+  background-color: #f2ede3;
+  border: 3px solid #d8c9a8;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(42, 38, 34, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.dues-stat-widget .dues-card:hover {
+  transform: translateY(-3px);
+}
+
+.dues-stat-widget .dues-card .card-title {
+  font-family: "Oswald", sans-serif;
+  font-style: italic;
+  color: #c1512d;
+  font-size: 1.5rem;
+  text-align: left;
+}
+
+.dues-stat-widget .dues-card .card-subtitle {
+  font-family: "Lexend Deca", sans-serif;
+  color: #2a2622;
+  text-align: left;
+  font-size: 1.7rem;
+}
+
+/* ===========================
+   INNER RATIO CARD
+   =========================== */
+.dues-stat-widget .dues-inner-card {
+  background-color: #ffffff;
+  border: 1px dashed #c1512d;
+  border-radius: 8px;
+}
+
+.dues-stat-widget .inner-card-header {
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: #c1512d;
+}
+
+.dues-stat-widget .dues-stat-ratio {
+  font-family: "Oswald", sans-serif;
+  font-weight: 600;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: #2a2622;
+}
+
+.dues-stat-widget .dues-stat-divider {
+  border-color: #c1512d;
+  opacity: 0.2;
+}
+
+.dues-stat-widget .inner-card-context {
+  font-family: "Lexend Deca", sans-serif;
+  color: #6c757d;
+}

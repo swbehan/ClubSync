@@ -1,13 +1,63 @@
+import { Container, Row } from "react-bootstrap";
+import { useUser } from "../../../context/UserContext.jsx";
+import DuesStatWidget from "./dues-stat-widget/DuesStatWidget.jsx";
+import { useState, useEffect } from "react";
+
 export default function TreasurerDashboard() {
+  const [stats, setStats] = useState({ gold: 0, silver: 0, total: 0, memberCount: 0 });
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (!user?.groupId) return;
+    const loadStats = async () => {
+      try {
+        const res = await fetch(`/api/dues/stats/${user.groupId}`, { credentials: "include" });
+        if (!res.ok) return;
+        setStats(await res.json());
+      } catch (err) {
+        console.error("Failed to load dues stats", err);
+      }
+    };
+    loadStats();
+  }, [user?.groupId]);
+  
   return (
-    <>
-      <h1>Treasurer Dashboard</h1>
-      <p>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Harum autem
-        doloribus, vero similique molestiae suscipit quam culpa perspiciatis
-        porro maxime in laborum quidem saepe quis cupiditate debitis sint
-        dolorem facilis.
+    <Container className="px-5">
+      <h1 className="moto">
+        Accountability made simple for you, {user.firstName}
+      </h1>
+      <p className="lead-text member-dashboard-subtitle">
+        Below is your one stop shop for dues statistics, dues approvals, and
+        group creation
       </p>
-    </>
+
+      <Row className="justify-content-center gy-4">
+        <DuesStatWidget
+          title="Total Dues Verified"
+          subtitle="Approved Members"
+          label="Approved Ratio"
+          count={stats.total}
+          total={stats.memberCount}
+          context="Includes all active Silver and Gold tier submissions."
+        />
+        <DuesStatWidget
+          title="Gold Tier"
+          subtitle="Approved Members"
+          label="Gold Ratio"
+          count={stats.gold}
+          context="Includes all members approved with Gold tier dues."
+        />
+        <DuesStatWidget
+          title="Silver Tier"
+          subtitle="Approved Members"
+          label="Silver Ratio"
+          count={stats.silver}
+          context="Includes all members approved with Silver tier dues."
+        />
+      </Row>
+    </Container>
   );
 }
+
+// <DuesVerificationWidget/>
+// <StartNewGroupWidget />

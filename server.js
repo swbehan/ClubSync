@@ -70,7 +70,7 @@ app.use(passport.session());
 // ----------------------------
 app.use("/", express.static("./frontend/dist"));
 app.use("/api/auth", authRouter);
-app.use("api/dues", duesRouter);
+app.use("/api/dues", duesRouter);
 app.use("/api/groups", groupsRouter);
 app.use("/api/events", eventsRouter);
 
