@@ -17,6 +17,7 @@ import TreasurerDashboard from "./pages/treasurer/treasurer-dashboard/TreasurerD
 import AdminDashboard from "./pages/admin/admindashboard/AdminDashboard.jsx";
 import EventList from "./pages/events/event-list/EventList.jsx";
 import DuesStatus from "./pages/member/dues-status/DuesStatus.jsx";
+import EventForm from "./pages/events/event-form/EventForm.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -51,6 +52,7 @@ createRoot(document.getElementById("root")).render(
           {/* Admin Role Pages */}
           <Route element={<ProtectedRoute allow={["admin"]} />}>
             <Route path="/admin/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/event-form" element={<EventForm />} />
           </Route>
         </Routes>
       </BasePage>
