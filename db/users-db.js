@@ -46,12 +46,15 @@ function UsersCollection({ collectionName = "users" } = {}) {
     }
   };
 
-  // will edit the dues status for the user and will update the dues tier to the one the user selected
+  // Atomically sets user duesState to pending for the chosen tier.
+  // Acts as a guard: returns null if the user is already pending/approved.
+  // The dues_submissions collection remains the main source of truth.
   me.submitDues = async (userId, duesTier) => {
     try {
       if (!ObjectId.isValid(userId)) return null;
       const updated = await users.findOneAndUpdate(
         {
+          _id: new ObjectId(userId),
           duesStatus: { $in: [DUES_STATUS.NOT_SUBMITTED, DUES_STATUS.DENIED] },
         },
         {
@@ -141,12 +144,29 @@ function UsersCollection({ collectionName = "users" } = {}) {
     }
   };
 
-  // get all users that are stored within the users collection
-  me.getAllUsers = async () => {
+  // Batched read: accepts user IDs and returns lean identity documents.
+  // Allows routes to populate user details on submissions/RSVPs in a single query.
+  me.findUsersByIds = async (ids = []) => {
     try {
-      return await users.find({}).toArray();
+      const objectIds = ids
+        .filter((id) => ObjectId.isValid(id))
+        .map((id) => new ObjectId(id));
+      if (objectIds.length === 0) return [];
+      return await users
+        .find(
+          { _id: { $in: objectIds } },
+          {
+            projection: {
+              firstName: 1,
+              lastName: 1,
+              email: 1,
+              duesTier: 1,
+            },
+          }
+        )
+        .toArray();
     } catch (error) {
-      console.error("Error fetching all users", error);
+      console.error("Error finding users by ids", error);
       throw error;
     }
   };

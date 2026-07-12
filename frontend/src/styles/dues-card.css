@@ -1,0 +1,20 @@
+/* ===========================================================================
+   SHARED: DUES CARD SHELL
+   =========================================================================== */
+.dues-card {
+  background-color: #f2ede3;
+  border: 3px solid #d8c9a8;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(42, 38, 34, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.dues-card:hover {
+  transform: translateY(-3px);
+}
+
+.dues-inner-card {
+  background-color: #ffffff;
+  border: 1px dashed #c1512d;
+  border-radius: 8px;
+}

@@ -154,10 +154,8 @@ eventRouter.get("/:id/rsvps", requireRole("admin"), async (req, res) => {
       return res.status(404).json({ message: "Event not found" });
     }
 
-    // event.rsvps is an array of user ObjectIds — look them all up at once.
-    const users = await Promise.all(
-      event.rsvps.map((userId) => usersCollection.findUserById(userId))
-    );
+    // event.rsvps is an array of user ObjectIds — look them all up in one query.
+    const users = await usersCollection.findUsersByIds(event.rsvps);
 
     // Build a CLEAN list — never leak passwordHash to the client.
     const attendees = users.filter(Boolean).map((u) => ({

@@ -1,0 +1,43 @@
+/* ===========================================================================
+   SHARED: STATUS / TIER BADGE
+   =========================================================================== */
+.status-badge {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  display: inline-block;
+  line-height: 1;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(42, 38, 34, 0.05);
+}
+
+.status-badge.pending {
+  background-color: #d8c9a8;
+  color: #2a2622;
+}
+
+.status-badge.approved {
+  background-color: #2a2622;
+  color: #f2ede3;
+}
+
+.status-badge.denied,
+.status-badge.not_submitted {
+  background-color: #c1512d;
+  color: #ffffff;
+}
+
+.status-badge.gold {
+  background-color: #c9a227;
+  color: #2a2622;
+}
+
+.status-badge.silver {
+  background-color: #b8b8b8;
+  color: #2a2622;
+}

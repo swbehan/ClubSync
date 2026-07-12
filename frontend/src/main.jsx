@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
+import "./styles/status-badge.css";
+import "./styles/dues-card.css";
 import ProtectedRoute from "./pages/auth/ProtectedRoute.jsx";
 import BasePage from "./pages/basepage/BasePage.jsx";
 import HomePage from "./pages/homepage/HomePage.jsx";

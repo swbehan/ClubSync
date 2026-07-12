@@ -1,5 +1,7 @@
 import { Col } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import { Link } from "react-router";
 import InnerDuesCard from "./InnerDuesCard";
 import "./dues-widget.css";
 
@@ -7,6 +9,10 @@ const TIER_LABELS = {
   silver: "Silver",
   gold: "Gold",
 };
+
+// a member can (re)submit only when they've never submitted or were denied 
+// pending/approved members have nothing to do here.
+const SUBMITTABLE = ["not_submitted", "denied"];
 
 const DUES_CONTENT_MAP = {
   pending: {
@@ -36,7 +42,7 @@ export default function DuesWidget({ user }) {
   const content = DUES_CONTENT_MAP[statusKey];
 
   return (
-    <Col xs={12} md={6} lg={5} className="role-card">
+    <Col xs={12} md={6} lg={5} className="role-card member-dues-widget">
       <Card className="h-100 dues-card d-flex flex-column justify-content-between">
         <Card.Body className="d-flex flex-column">
           <Card.Title>Financial Overview</Card.Title>
@@ -62,6 +68,17 @@ export default function DuesWidget({ user }) {
                 <InnerDuesCard componentInfo={content}/>
             </Card.Body>
           </Card>
+
+          {SUBMITTABLE.includes(statusKey) && (
+            <Button
+              as={Link}
+              to="/member/dues-status"
+              variant="primary"
+              className="mt-3"
+            >
+              Submit Dues
+            </Button>
+          )}
         </Card.Body>
       </Card>
     </Col>

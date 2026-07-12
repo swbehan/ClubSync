@@ -1,6 +1,7 @@
 import { Container, Row } from "react-bootstrap";
 import { useUser } from "../../../context/UserContext.jsx";
 import DuesStatWidget from "./dues-stat-widget/DuesStatWidget.jsx";
+import DuesVerificationWidget from "./dues-verification-widget/DuesVerificationWidget.jsx";
 import { useState, useEffect } from "react";
 
 export default function TreasurerDashboard() {
@@ -26,7 +27,7 @@ export default function TreasurerDashboard() {
       <h1 className="moto">
         Accountability made simple for you, {user.firstName}
       </h1>
-      <p className="lead-text member-dashboard-subtitle">
+      <p className="lead-text spacing-after-moto">
         Below is your one stop shop for dues statistics, dues approvals, and
         group creation
       </p>
@@ -43,21 +44,21 @@ export default function TreasurerDashboard() {
         <DuesStatWidget
           title="Gold Tier"
           subtitle="Approved Members"
-          label="Gold Ratio"
+          label="Gold"
           count={stats.gold}
           context="Includes all members approved with Gold tier dues."
         />
         <DuesStatWidget
           title="Silver Tier"
           subtitle="Approved Members"
-          label="Silver Ratio"
+          label="Silver"
           count={stats.silver}
           context="Includes all members approved with Silver tier dues."
         />
+        <DuesVerificationWidget/>
       </Row>
     </Container>
   );
 }
 
-// <DuesVerificationWidget/>
 // <StartNewGroupWidget />
