@@ -10,7 +10,7 @@ const TIER_LABELS = {
   gold: "Gold",
 };
 
-// a member can (re)submit only when they've never submitted or were denied 
+// a member can (re)submit only when they've never submitted or were denied
 // pending/approved members have nothing to do here.
 const SUBMITTABLE = ["not_submitted", "denied"];
 
@@ -65,7 +65,7 @@ export default function DuesWidget({ user }) {
 
           <Card className="dues-inner-card mt-auto">
             <Card.Body>
-                <InnerDuesCard componentInfo={content}/>
+              <InnerDuesCard componentInfo={content} />
             </Card.Body>
           </Card>
 

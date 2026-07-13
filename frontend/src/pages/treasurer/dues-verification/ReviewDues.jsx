@@ -8,7 +8,7 @@ export default function ReviewDues() {
       <p className="lead-text spacing-after-moto">
         Review all dues submissions from members of your club
       </p>
-      
+
       <DuesVerificationWidget />
     </Container>
   );

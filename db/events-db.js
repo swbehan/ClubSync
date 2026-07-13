@@ -8,93 +8,94 @@ function EventsCollection({ collectionName = "events" } = {}) {
 
   const events = connect(collectionName);
 
-  me.createEvent = async ({ groupId, name, type, date, location, requiredTier, createdBy }) => { 
-    try { 
-        const newEventDoc = { 
-            groupId,
-            name,
-            type,
-            date,
-            location,
-            requiredTier,
-            createdBy,
-            rsvps: [],
-            createdAt: new Date(),
-        };
-
-        const result = await events.insertOne(newEventDoc);
-        console.log("Created new event in MongoDB");
-        return { id: result.insertedId, name, createdBy };
-    } catch(error) { 
-        console.error("Error registering new event", error);
-        throw error;
-
-    }
-  };
-
-  me.getEventsByGroup = async (groupId) => { 
-    try { 
-        return await events.find({ groupId }).toArray();
-    } catch(error) { 
-        console.error("Error finding events from this group", error);
-        throw error;
-
-    }
-  };
-
-  me.findEventById = async (id) => { 
+  me.createEvent = async ({
+    groupId,
+    name,
+    type,
+    date,
+    location,
+    requiredTier,
+    createdBy,
+  }) => {
     try {
-        if(!ObjectId.isValid(id)) return null;
-        return await events.findOne({ _id: new ObjectId(id)});
-    } catch (error) { 
-        console.error("Error finding event by id", error);
-        throw error;
+      const newEventDoc = {
+        groupId,
+        name,
+        type,
+        date,
+        location,
+        requiredTier,
+        createdBy,
+        rsvps: [],
+        createdAt: new Date(),
+      };
+
+      const result = await events.insertOne(newEventDoc);
+      console.log("Created new event in MongoDB");
+      return { id: result.insertedId, name, createdBy };
+    } catch (error) {
+      console.error("Error registering new event", error);
+      throw error;
+    }
+  };
+
+  me.getEventsByGroup = async (groupId) => {
+    try {
+      return await events.find({ groupId }).toArray();
+    } catch (error) {
+      console.error("Error finding events from this group", error);
+      throw error;
+    }
+  };
+
+  me.findEventById = async (id) => {
+    try {
+      if (!ObjectId.isValid(id)) return null;
+      return await events.findOne({ _id: new ObjectId(id) });
+    } catch (error) {
+      console.error("Error finding event by id", error);
+      throw error;
     }
   };
 
   me.deleteEvent = async (id) => {
-  try {
-    if (!ObjectId.isValid(id)) return null;
-    const result = await events.deleteOne({ _id: new ObjectId(id) });
-    return result.deletedCount; // 1 if deleted, 0 if no match
-    } catch (error) {
-    console.error("Error deleting event", error);
-    throw error;
-    }
- };
-
- me.updateEvent = async (id, update) => {
     try {
-        if (!ObjectId.isValid(id)) return null;
-        await events.updateOne({ _id: new ObjectId(id)}, { $set: update });
-        return await me.findEventById(id);
-    } catch(error) {
-        console.error("Error updating event", error);
-        throw error;
+      if (!ObjectId.isValid(id)) return null;
+      const result = await events.deleteOne({ _id: new ObjectId(id) });
+      return result.deletedCount; // 1 if deleted, 0 if no match
+    } catch (error) {
+      console.error("Error deleting event", error);
+      throw error;
     }
- };
+  };
 
- me.addRsvp = async (eventId, userId) => {
-  try {
-    if (!ObjectId.isValid(eventId)) return null;
-    await events.updateOne(
-      { _id: new ObjectId(eventId) },
-      { $addToSet: { rsvps: new ObjectId(userId) } }
-    );
-    return await me.findEventById(eventId); // return updated event so route can respond
-  } catch (error) {
-    console.error("Error adding RSVP", error);
-    throw error;
-  }
-};
+  me.updateEvent = async (id, update) => {
+    try {
+      if (!ObjectId.isValid(id)) return null;
+      await events.updateOne({ _id: new ObjectId(id) }, { $set: update });
+      return await me.findEventById(id);
+    } catch (error) {
+      console.error("Error updating event", error);
+      throw error;
+    }
+  };
 
-
-
-
+  me.addRsvp = async (eventId, userId) => {
+    try {
+      if (!ObjectId.isValid(eventId)) return null;
+      await events.updateOne(
+        { _id: new ObjectId(eventId) },
+        { $addToSet: { rsvps: new ObjectId(userId) } }
+      );
+      return await me.findEventById(eventId); // return updated event so route can respond
+    } catch (error) {
+      console.error("Error adding RSVP", error);
+      throw error;
+    }
+  };
 
   return me;
-
-} 
+}
 
 const eventsCollection = EventsCollection();
 export default eventsCollection;

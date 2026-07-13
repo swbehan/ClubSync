@@ -27,7 +27,7 @@ const strategy = new LocalStrategy(
       // build a clean copy without passwordHash before sending it to the client.
       return done(null, user);
     } catch (error) {
-      // there was an error with the login attempt 
+      // there was an error with the login attempt
       done(error);
     }
   }

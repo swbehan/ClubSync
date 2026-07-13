@@ -5,7 +5,7 @@ import AuthForm from "../AuthForm.jsx";
 const ROLE_HOME = {
   member: "/member/member-dashboard",
   treasurer: "/treasurer/treasurer-dashboard",
-  admin: "/admin/admin-dashboard"
+  admin: "/admin/admin-dashboard",
 };
 
 export default function LoginPage() {

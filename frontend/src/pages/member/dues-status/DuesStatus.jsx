@@ -82,10 +82,7 @@ export default function DuesStatus() {
           is nothing to submit right now.
         </p>
       ) : (
-        <Form
-          onSubmit={handleSubmit}
-          className="mt-3 spacing-after-moto"
-        >
+        <Form onSubmit={handleSubmit} className="mt-3 spacing-after-moto">
           <Form.Group className="mb-3">
             <Form.Label>Membership tier</Form.Label>
             <Form.Select value={tier} onChange={(e) => setTier(e.target.value)}>

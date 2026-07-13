@@ -10,6 +10,7 @@ ClubSync replaces the manual Google Forms + spreadsheet workflow that student cl
 ## Class
 
 <!-- TODO: replace with your course link (e.g. the course page / syllabus URL) -->
+
 CS 4530 / Web Development — Northeastern University · [Class Link](https://TODO)
 
 ## Project Objective
@@ -88,11 +89,11 @@ This populates all four collections with ~1,300 consistent synthetic records (on
 
 After running `npm run seed`, log in with any seeded account. **All seeded accounts use the password `password123`.**
 
-| Role | Email | Password |
-|---|---|---|
-| Admin | `seed.admin@clubsync.test` | `password123` |
-| Treasurer | `seed.treasurer@clubsync.test` | `password123` |
-| Member | `alex.smith0@clubsync.test` (or any `firstname.lastname{n}@clubsync.test`) | `password123` |
+| Role      | Email                                                                      | Password      |
+| --------- | -------------------------------------------------------------------------- | ------------- |
+| Admin     | `seed.admin@clubsync.test`                                                 | `password123` |
+| Treasurer | `seed.treasurer@clubsync.test`                                             | `password123` |
+| Member    | `alex.smith0@clubsync.test` (or any `firstname.lastname{n}@clubsync.test`) | `password123` |
 
 New members can also register at `/register` and join the active group with its join code.
 
@@ -100,19 +101,19 @@ New members can also register at `/register` and join the active group with its 
 
 **Backend (project root):**
 
-| Command | Description |
-|---|---|
-| `npm start` | Start the Express server (nodemon) |
+| Command        | Description                                  |
+| -------------- | -------------------------------------------- |
+| `npm start`    | Start the Express server (nodemon)           |
 | `npm run seed` | Populate the database with synthetic records |
-| `npm run lint` | Lint the backend |
+| `npm run lint` | Lint the backend                             |
 
 **Frontend (`frontend/`):**
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start the Vite dev server |
+| Command         | Description                 |
+| --------------- | --------------------------- |
+| `npm run dev`   | Start the Vite dev server   |
 | `npm run build` | Build the production bundle |
-| `npm run lint` | Lint the frontend |
+| `npm run lint`  | Lint the frontend           |
 
 ## License
 

@@ -12,5 +12,5 @@ export default function ProtectedRoute({ allow }) {
   if (allow && !allow.includes(user.role)) {
     return <Navigate to="/" replace />;
   }
-  return <Outlet />; 
+  return <Outlet />;
 }

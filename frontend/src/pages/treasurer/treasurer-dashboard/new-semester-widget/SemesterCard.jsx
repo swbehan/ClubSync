@@ -10,7 +10,9 @@ export default function SemesterCard({ active, onStart }) {
         <Card.Title>Semester Control</Card.Title>
         <Card.Subtitle className="mb-2 d-flex align-items-center justify-content-between w-100">
           Current Semester
-          <span className="status-badge approved">{active?.name ?? "None"}</span>
+          <span className="status-badge approved">
+            {active?.name ?? "None"}
+          </span>
         </Card.Subtitle>
 
         <Card className="dues-inner-card mt-auto">

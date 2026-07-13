@@ -1,40 +1,38 @@
-import { useState } from "react"; 
+import { useState } from "react";
 import PropTypes from "prop-types";
 import Button from "react-bootstrap/Button";
-import "./rsvp-button.css"
-
+import "./rsvp-button.css";
 
 export default function RSVPButton({ eventId, onRsvp }) {
-    const [message, setMessage] = useState("");
-    const [isError, setIsError] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
-    const handleRsvp = async () => {
-        setMessage("");
+  const handleRsvp = async () => {
+    setMessage("");
 
-        try {
-        const res = await fetch(`/api/events/${eventId}/rsvp`, { 
-            method: "POST",
-            credentials: "include",
-        });
+    try {
+      const res = await fetch(`/api/events/${eventId}/rsvp`, {
+        method: "POST",
+        credentials: "include",
+      });
 
-        const data = await res.json().catch(() => ({}));
+      const data = await res.json().catch(() => ({}));
 
-        if (!res.ok) { 
-            setIsError(true);
-            setMessage(data.message || "Could not RSVP.");
-            return;
-        }
-
-        setIsError(false);
-        setMessage("You're RSVP'd");
-        if (onRsvp) onRsvp(data);
-    } catch (error) {
-        console.error("RSVP request failed", error);
+      if (!res.ok) {
         setIsError(true);
-        setMessage("Something went wrong. Please try again.");
-    }
-    };
+        setMessage(data.message || "Could not RSVP.");
+        return;
+      }
 
+      setIsError(false);
+      setMessage("You're RSVP'd");
+      if (onRsvp) onRsvp(data);
+    } catch (error) {
+      console.error("RSVP request failed", error);
+      setIsError(true);
+      setMessage("Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <div className="rsvp-button">
@@ -55,5 +53,5 @@ export default function RSVPButton({ eventId, onRsvp }) {
 // propTypes (outside, at the bottom)
 RSVPButton.propTypes = {
   eventId: PropTypes.string.isRequired, // required — component can't work without it
-  onRsvp: PropTypes.func,               // optional
+  onRsvp: PropTypes.func, // optional
 };

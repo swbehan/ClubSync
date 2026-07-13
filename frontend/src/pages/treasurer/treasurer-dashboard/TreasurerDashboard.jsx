@@ -6,14 +6,21 @@ import NewSemesterWidget from "./new-semester-widget/NewSemesterWidget.jsx";
 import { useState, useEffect } from "react";
 
 export default function TreasurerDashboard() {
-  const [stats, setStats] = useState({ gold: 0, silver: 0, total: 0, memberCount: 0 });
+  const [stats, setStats] = useState({
+    gold: 0,
+    silver: 0,
+    total: 0,
+    memberCount: 0,
+  });
   const { user } = useUser();
 
   useEffect(() => {
     if (!user?.groupId) return;
     const loadStats = async () => {
       try {
-        const res = await fetch(`/api/dues/stats/${user.groupId}`, { credentials: "include" });
+        const res = await fetch(`/api/dues/stats/${user.groupId}`, {
+          credentials: "include",
+        });
         if (!res.ok) return;
         setStats(await res.json());
       } catch (err) {
@@ -22,7 +29,7 @@ export default function TreasurerDashboard() {
     };
     loadStats();
   }, [user?.groupId]);
-  
+
   return (
     <Container className="px-5">
       <h1 className="moto">
@@ -56,7 +63,7 @@ export default function TreasurerDashboard() {
           count={stats.silver}
           context="Includes all members approved with Silver tier dues."
         />
-        <DuesVerificationWidget previewLimit={5}/>
+        <DuesVerificationWidget previewLimit={5} />
         <NewSemesterWidget />
       </Row>
     </Container>

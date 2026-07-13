@@ -4,9 +4,8 @@ import groupsCollection from "../db/groups-db.js"; // to find the active group
 import { isAuthenticated, requireRole } from "../middleware/auth.js";
 import usersCollection from "../db/users-db.js";
 
-
 const eventRouter = Router();
-const TIER_RANK = { none: 0, silver: 1, gold: 2};
+const TIER_RANK = { none: 0, silver: 1, gold: 2 };
 
 // Decide whether a user may RSVP. Returns a clear reason on failure so the UI
 // can tell the member exactly WHY (your proposal calls for this).
@@ -34,96 +33,95 @@ function checkEligibility(user, event) {
   return { eligible: true };
 }
 
-
-
-
 eventRouter.get("/", isAuthenticated, async (req, res) => {
-    try { 
-        const activeGroup = await groupsCollection.findActiveGroup();
-        if (!activeGroup) { 
-            return res.json([]);
-        }
-        const events = await eventsCollection.getEventsByGroup(activeGroup._id);
-        res.json(events);
-    } catch(error) { 
-        console.error("Error fetching events", error);
-        res.status(500).json({ message: "Internal Server Error" });
+  try {
+    const activeGroup = await groupsCollection.findActiveGroup();
+    if (!activeGroup) {
+      return res.json([]);
     }
+    const events = await eventsCollection.getEventsByGroup(activeGroup._id);
+    res.json(events);
+  } catch (error) {
+    console.error("Error fetching events", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 eventRouter.post("/", requireRole("admin"), async (req, res) => {
-    try { 
-        const {name, type, date, location, requiredTier } = req.body;
+  try {
+    const { name, type, date, location, requiredTier } = req.body;
 
-        if (!name || !date) { 
-            return res.status(400).json({ message: "Name and date are required"});
-        }
-
-        const activeGroup = await groupsCollection.findActiveGroup();
-        if (!activeGroup) { 
-            return res.status(400).json({ message: "No active group to attach the event to"});
-        }
-
-        const result = await eventsCollection.createEvent({
-            groupId: activeGroup._id,
-            name,
-            type, 
-            date: new Date(date),
-            location,
-            requiredTier: requiredTier || "none",
-            createdBy: req.user._id
-        });
-        res.status(201).json(result);
-    } catch(error) { 
-        console.error("Error creating event", error);
-        res.status(500).json({ message: "Internal Server Error"});
+    if (!name || !date) {
+      return res.status(400).json({ message: "Name and date are required" });
     }
+
+    const activeGroup = await groupsCollection.findActiveGroup();
+    if (!activeGroup) {
+      return res
+        .status(400)
+        .json({ message: "No active group to attach the event to" });
+    }
+
+    const result = await eventsCollection.createEvent({
+      groupId: activeGroup._id,
+      name,
+      type,
+      date: new Date(date),
+      location,
+      requiredTier: requiredTier || "none",
+      createdBy: req.user._id,
+    });
+    res.status(201).json(result);
+  } catch (error) {
+    console.error("Error creating event", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 eventRouter.get("/:id", isAuthenticated, async (req, res) => {
-    try { 
-        const event = await eventsCollection.findEventById(req.params.id);
-        if (!event) {
-            return res.status(404).json({ message: "Event not found" });
-        }
-        res.json(event);
-    } catch(error) {
-        console.error("Error fetching event", error);
-        res.status(500).json({message: "Internal Server Error"});
+  try {
+    const event = await eventsCollection.findEventById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
     }
+    res.json(event);
+  } catch (error) {
+    console.error("Error fetching event", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
-eventRouter.put("/:id", requireRole("admin"), async (req, res) => { 
-    try {
-        const { name, type, date, location, requiredTier } = req.body;
-        const update = {};
-        if (name !== undefined) update.name = name;
-        if (type !== undefined) update.type = type;
-        if (date !== undefined) update.date = new Date(date);
-        if (location !== undefined) update.location = location;
-        if (requiredTier !== undefined) update.requiredTier = requiredTier;
-        const updated = await eventsCollection.updateEvent(req.params.id, update);
-        if (!updated) {
-            return res.status(404).json({ message: "Event not found" });
-        }
-        res.json(updated);
-    } catch(error) { 
-        console.error("Error updating event", error);
-        res.status(500).json({message: "Internal Server Error"});
+eventRouter.put("/:id", requireRole("admin"), async (req, res) => {
+  try {
+    const { name, type, date, location, requiredTier } = req.body;
+    const update = {};
+    if (name !== undefined) update.name = name;
+    if (type !== undefined) update.type = type;
+    if (date !== undefined) update.date = new Date(date);
+    if (location !== undefined) update.location = location;
+    if (requiredTier !== undefined) update.requiredTier = requiredTier;
+    const updated = await eventsCollection.updateEvent(req.params.id, update);
+    if (!updated) {
+      return res.status(404).json({ message: "Event not found" });
     }
+    res.json(updated);
+  } catch (error) {
+    console.error("Error updating event", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 eventRouter.delete("/:id", requireRole("admin"), async (req, res) => {
-    try { 
-        const deleteCount = await eventsCollection.deleteEvent(req.params.id);
-        if (!deleteCount) { 
-            return res.status(404).json({ message: "Event not found" });
-        }
-        res.json({ message: "Event cancelled" });
-    } catch (error) { 
-        console.error("Error deleting event", error);
-        res.status(500).json({message: "Internal Server Error"});
+  try {
+    const deleteCount = await eventsCollection.deleteEvent(req.params.id);
+    if (!deleteCount) {
+      return res.status(404).json({ message: "Event not found" });
     }
+    res.json({ message: "Event cancelled" });
+  } catch (error) {
+    console.error("Error deleting event", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 eventRouter.post("/:id/rsvp", isAuthenticated, async (req, res) => {
@@ -173,8 +171,4 @@ eventRouter.get("/:id/rsvps", requireRole("admin"), async (req, res) => {
   }
 });
 
-
-
 export default eventRouter;
-
-

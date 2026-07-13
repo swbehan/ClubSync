@@ -1,0 +1,8 @@
+node_modules
+dist
+frontend/dist
+frontend/node_modules
+**/package-lock.json
+frontend/public
+*.min.js
+*.min.css

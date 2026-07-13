@@ -21,7 +21,6 @@ import EventForm from "./pages/events/event-form/EventForm.jsx";
 import EventDetail from "./pages/events/event-detail/EventDetail.jsx";
 import ReviewDues from "./pages/treasurer/dues-verification/ReviewDues.jsx";
 
-
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -40,8 +39,8 @@ createRoot(document.getElementById("root")).render(
               element={<MemberDashboard />}
             />
             <Route path="/member/events" element={<EventList />} />
-            <Route path="/member/events/:id" element={<EventDetail />}/>
-            <Route path="/member/dues-status" element={<DuesStatus /> }/>
+            <Route path="/member/events/:id" element={<EventDetail />} />
+            <Route path="/member/dues-status" element={<DuesStatus />} />
           </Route>
 
           {/* Treasurer Role Pages */}

@@ -31,10 +31,70 @@ const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const dateWithinDays = (range) =>
   new Date(Date.now() + randInt(-range, range) * 24 * 60 * 60 * 1000);
 
-const FIRST_NAMES = ["Alex", "Sam", "Jordan", "Taylor", "Casey", "Riley", "Morgan", "Jamie", "Drew", "Quinn", "Avery", "Parker", "Reese", "Skyler", "Cameron", "Hayden", "Emerson", "Rowan", "Sawyer", "Finley"];
-const LAST_NAMES = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Lee", "Nguyen", "Patel", "Kim"];
-const EVENT_NAMES = ["Season Opener", "Weekly Practice", "General Body Meeting", "Track Day", "Social Mixer", "Skills Clinic", "Race Night", "Team Dinner", "Fundraiser", "Alumni Meetup"];
-const LOCATIONS = ["Main Campus Plaza", "West Field Hub", "Student Center RM 402", "Clubhouse", "North Track", "Rec Center"];
+const FIRST_NAMES = [
+  "Alex",
+  "Sam",
+  "Jordan",
+  "Taylor",
+  "Casey",
+  "Riley",
+  "Morgan",
+  "Jamie",
+  "Drew",
+  "Quinn",
+  "Avery",
+  "Parker",
+  "Reese",
+  "Skyler",
+  "Cameron",
+  "Hayden",
+  "Emerson",
+  "Rowan",
+  "Sawyer",
+  "Finley",
+];
+const LAST_NAMES = [
+  "Smith",
+  "Johnson",
+  "Williams",
+  "Brown",
+  "Jones",
+  "Garcia",
+  "Miller",
+  "Davis",
+  "Rodriguez",
+  "Martinez",
+  "Hernandez",
+  "Lopez",
+  "Gonzalez",
+  "Wilson",
+  "Anderson",
+  "Thomas",
+  "Lee",
+  "Nguyen",
+  "Patel",
+  "Kim",
+];
+const EVENT_NAMES = [
+  "Season Opener",
+  "Weekly Practice",
+  "General Body Meeting",
+  "Track Day",
+  "Social Mixer",
+  "Skills Clinic",
+  "Race Night",
+  "Team Dinner",
+  "Fundraiser",
+  "Alumni Meetup",
+];
+const LOCATIONS = [
+  "Main Campus Plaza",
+  "West Field Hub",
+  "Student Center RM 402",
+  "Clubhouse",
+  "North Track",
+  "Rec Center",
+];
 const TYPES = ["practice", "social", "meeting"];
 const TIER_RANK = { none: 0, silver: 1, gold: 2 };
 
@@ -61,10 +121,39 @@ async function seed() {
   // make sure no other group is left active, so findActiveGroup returns ours
   await groups.updateMany({}, { $set: { active: false } });
   const groupDocs = [
-    { _id: activeGroupId, name: "Fall 2026", joinCode: "482913", createdBy: treasurerId, active: true, createdAt: new Date(), seed: true },
-    { name: "Spring 2026", joinCode: "119274", createdBy: treasurerId, active: false, createdAt: new Date("2026-01-10"), seed: true },
-    { name: "Fall 2025", joinCode: "550183", createdBy: treasurerId, active: false, createdAt: new Date("2025-09-02"), seed: true },
-    { name: "Spring 2025", joinCode: "738421", createdBy: treasurerId, active: false, createdAt: new Date("2025-01-14"), seed: true },
+    {
+      _id: activeGroupId,
+      name: "Fall 2026",
+      joinCode: "482913",
+      createdBy: treasurerId,
+      active: true,
+      createdAt: new Date(),
+      seed: true,
+    },
+    {
+      name: "Spring 2026",
+      joinCode: "119274",
+      createdBy: treasurerId,
+      active: false,
+      createdAt: new Date("2026-01-10"),
+      seed: true,
+    },
+    {
+      name: "Fall 2025",
+      joinCode: "550183",
+      createdBy: treasurerId,
+      active: false,
+      createdAt: new Date("2025-09-02"),
+      seed: true,
+    },
+    {
+      name: "Spring 2025",
+      joinCode: "738421",
+      createdBy: treasurerId,
+      active: false,
+      createdAt: new Date("2025-01-14"),
+      seed: true,
+    },
   ];
   await groups.insertMany(groupDocs);
 
@@ -85,8 +174,20 @@ async function seed() {
   });
 
   const userDocs = [
-    baseUser(adminId, "admin", { email: "seed.admin@clubsync.test", firstName: "Ada", lastName: "Admin", duesStatus: "approved", duesTier: "gold" }),
-    baseUser(treasurerId, "treasurer", { email: "seed.treasurer@clubsync.test", firstName: "Tara", lastName: "Treasurer", duesStatus: "approved", duesTier: "gold" }),
+    baseUser(adminId, "admin", {
+      email: "seed.admin@clubsync.test",
+      firstName: "Ada",
+      lastName: "Admin",
+      duesStatus: "approved",
+      duesTier: "gold",
+    }),
+    baseUser(treasurerId, "treasurer", {
+      email: "seed.treasurer@clubsync.test",
+      firstName: "Tara",
+      lastName: "Treasurer",
+      duesStatus: "approved",
+      duesTier: "gold",
+    }),
   ];
 
   // members get a realistic spread of dues states
@@ -114,7 +215,15 @@ async function seed() {
       duesTier = "null";
     }
 
-    userDocs.push(baseUser(memberId, "member", { email, firstName, lastName, duesStatus, duesTier }));
+    userDocs.push(
+      baseUser(memberId, "member", {
+        email,
+        firstName,
+        lastName,
+        duesStatus,
+        duesTier,
+      })
+    );
 
     // anyone who submitted (not "not_submitted") gets a matching submission record
     if (duesStatus !== "not_submitted") {
@@ -125,7 +234,8 @@ async function seed() {
         tier: duesTier,
         paymentReference: `VENMO-${randInt(10000, 99999)}`,
         status: duesStatus,
-        reviewNote: duesStatus === "denied" ? "Payment reference did not match." : null,
+        reviewNote:
+          duesStatus === "denied" ? "Payment reference did not match." : null,
         reviewedBy: reviewed ? treasurerId : null,
         submittedAt: dateWithinDays(30),
         reviewedAt: reviewed ? new Date() : null,
@@ -155,7 +265,9 @@ async function seed() {
     });
     // random subset of eligible members RSVP
     const shuffled = [...eligible].sort(() => Math.random() - 0.5);
-    const rsvps = shuffled.slice(0, randInt(0, Math.min(40, eligible.length))).map((m) => m._id);
+    const rsvps = shuffled
+      .slice(0, randInt(0, Math.min(40, eligible.length)))
+      .map((m) => m._id);
 
     eventDocs.push({
       groupId: activeGroupId,
@@ -173,13 +285,19 @@ async function seed() {
   await events.insertMany(eventDocs);
 
   // ---- summary ----
-  const total = groupDocs.length + userDocs.length + memberSubmissions.length + eventDocs.length;
+  const total =
+    groupDocs.length +
+    userDocs.length +
+    memberSubmissions.length +
+    eventDocs.length;
   console.log("\n=== Seed complete ===");
   console.log(`  groups:            ${groupDocs.length}`);
   console.log(`  users:             ${userDocs.length}`);
   console.log(`  dues_submissions:  ${memberSubmissions.length}`);
   console.log(`  events:            ${eventDocs.length}`);
-  console.log(`  TOTAL records:     ${total}  ${total >= 1000 ? "✅ (≥1000)" : "⚠️ under 1000"}`);
+  console.log(
+    `  TOTAL records:     ${total}  ${total >= 1000 ? "✅ (≥1000)" : "⚠️ under 1000"}`
+  );
   console.log("\n  Log in as any seeded account with password: password123");
   console.log("  e.g. seed.admin@clubsync.test / seed.treasurer@clubsync.test");
 }

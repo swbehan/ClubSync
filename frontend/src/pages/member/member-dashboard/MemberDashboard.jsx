@@ -10,7 +10,8 @@ export default function MemberDashboard() {
     <Container className="px-5">
       <h1 className="moto">Welcome Back, {user.firstName}</h1>
       <p className="lead-text spacing-after-moto">
-        Below is your overview into your clubs necessities; updates on dues status and upcoming events.
+        Below is your overview into your clubs necessities; updates on dues
+        status and upcoming events.
       </p>
 
       <Row className="justify-content-center gy-4">

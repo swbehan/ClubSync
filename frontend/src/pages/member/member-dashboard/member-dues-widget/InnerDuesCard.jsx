@@ -1,5 +1,5 @@
 export default function InnerDuesCard({ componentInfo }) {
-  const {header, subheader, context} = componentInfo;
+  const { header, subheader, context } = componentInfo;
   return (
     <>
       <div className="inner-card-header">{header}</div>
