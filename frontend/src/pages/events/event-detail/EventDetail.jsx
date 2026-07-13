@@ -6,7 +6,6 @@ import { useUser } from "../../../context/UserContext.jsx";
 import RSVPButton from "../rsvp-button/RSVPButton.jsx";
 import "./event-detail.css";
 
-
 export default function EventDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -82,27 +81,34 @@ export default function EventDetail() {
 
   return (
     <Container className="px-5">
-      <h1>{event.name}</h1>
-      <p>
-        {event.type} · {event.location}
-      </p>
-      <p>Date: {new Date(event.date).toLocaleDateString()}</p>
-      <p>Required tier: {event.requiredTier}</p>
+      <div className="event-detail-card">
+        <h1>{event.name}</h1>
+        <p>
+          {event.type} · {event.location}
+        </p>
+        <p>Date: {new Date(event.date).toLocaleDateString()}</p>
+        <p>Required tier: {event.requiredTier}</p>
 
-      <RSVPButton eventId={event._id} />
+        <RSVPButton eventId={event._id} />
+
+        {user && user.role === "admin" && (
+          <div className="mt-3">
+            <Link
+              to={`/admin/events/${event._id}/edit`}
+              className="btn btn-outline-primary me-2"
+            >
+              Edit
+            </Link>
+            <Button variant="danger" onClick={handleCancel}>
+              Cancel Event
+            </Button>
+          </div>
+        )}
+      </div>
 
       {user && user.role === "admin" && (
         <div className="attendee-list mt-4">
           <h3>RSVPs ({attendees.length})</h3>
-          <Link
-            to={`/admin/events/${event._id}/edit`}
-            className="btn btn-outline-primary mb-3 me-2"
-          >
-            Edit
-          </Link>
-          <Button variant="danger" onClick={handleCancel} className="mb-3">
-            Cancel Event
-          </Button>
           {attendees.length === 0 && <p>No RSVPs yet</p>}
           {attendees.map((a) => (
             <p key={a.id}>

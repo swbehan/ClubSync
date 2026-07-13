@@ -79,63 +79,65 @@ export default function EventEditForm() {
 
   return (
     <Container className="px-5">
-      <h2>Edit Event</h2>
+      <div className="event-edit">
+        <h2>Edit Event</h2>
 
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Event name</Form.Label>
-          <Form.Control
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </Form.Group>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3">
+            <Form.Label>Event name</Form.Label>
+            <Form.Control
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Type</Form.Label>
-          <Form.Select value={type} onChange={(e) => setType(e.target.value)}>
-            <option value="practice">Practice</option>
-            <option value="social">Social</option>
-            <option value="meeting">Meeting</option>
-          </Form.Select>
-        </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Type</Form.Label>
+            <Form.Select value={type} onChange={(e) => setType(e.target.value)}>
+              <option value="practice">Practice</option>
+              <option value="social">Social</option>
+              <option value="meeting">Meeting</option>
+            </Form.Select>
+          </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Date</Form.Label>
-          <Form.Control
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-        </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Date</Form.Label>
+            <Form.Control
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Location</Form.Label>
-          <Form.Control
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
-        </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Location</Form.Label>
+            <Form.Control
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+          </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Required tier</Form.Label>
-          <Form.Select
-            value={requiredTier}
-            onChange={(e) => setRequiredTier(e.target.value)}
-          >
-            <option value="none">None (open to all)</option>
-            <option value="silver">Silver</option>
-            <option value="gold">Gold</option>
-          </Form.Select>
-        </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Required tier</Form.Label>
+            <Form.Select
+              value={requiredTier}
+              onChange={(e) => setRequiredTier(e.target.value)}
+            >
+              <option value="none">None (open to all)</option>
+              <option value="silver">Silver</option>
+              <option value="gold">Gold</option>
+            </Form.Select>
+          </Form.Group>
 
-        {error && <div className="text-danger mb-3">{error}</div>}
+          {error && <div className="text-danger mb-3">{error}</div>}
 
-        <Button variant="primary" type="submit">
-          Save Changes
-        </Button>
-      </Form>
+          <Button variant="primary" type="submit">
+            Save Changes
+          </Button>
+        </Form>
+      </div>
     </Container>
   );
 }

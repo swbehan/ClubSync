@@ -1,0 +1,18 @@
+/* Form shell — white card with the app's tan border + soft shadow. */
+.event-form {
+  max-width: 560px;
+  background: #ffffff;
+  border: 3px solid #d8c9a8;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  margin-top: 1rem;
+  box-shadow: 0 4px 12px rgba(42, 38, 34, 0.08);
+}
+
+/* success confirmation — cream inner panel with a dashed rust border */
+.event-created-panel {
+  background: #f2ede3;
+  border: 1px dashed #c1512d;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}

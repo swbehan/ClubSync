@@ -1,0 +1,28 @@
+/* Main event info — white card matching the app palette. */
+.event-detail-card {
+  max-width: 640px;
+  background: #ffffff;
+  border: 3px solid #d8c9a8;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  margin-top: 1rem;
+  box-shadow: 0 4px 12px rgba(42, 38, 34, 0.08);
+}
+
+.event-detail-card p {
+  margin-bottom: 0.35rem;
+  color: #6b5f4f;
+}
+
+/* admin attendee list — cream card */
+.attendee-list {
+  max-width: 640px;
+  background: #f2ede3;
+  border: 3px solid #d8c9a8;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+
+.attendee-list p {
+  margin-bottom: 0.25rem;
+}

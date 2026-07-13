@@ -1,0 +1,9 @@
+/* RSVP button + its status message (success green / error red from Bootstrap). */
+.rsvp-button {
+  margin-top: 1rem;
+}
+
+.rsvp-button p {
+  margin-top: 0.75rem;
+  font-weight: 500;
+}
