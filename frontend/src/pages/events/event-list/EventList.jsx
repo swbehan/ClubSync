@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router";
 import Container from "react-bootstrap/Container";
 import "./event-list.css";
 
@@ -57,13 +58,19 @@ export default function EventList() {
 
       {/* turn each event object into a card; key must be unique + stable */}
       {events.map((event) => (
-        <div key={event._id} className="event-card">
-          <h3>{event.name}</h3>
-          <p>
-            {event.type} · {event.location}
-          </p>
-          <p>Required tier: {event.requiredTier}</p>
-        </div>
+        <Link
+          key={event._id}
+          to={`/member/events/${event._id}`}
+          className="event-card-link"
+        >
+          <div className="event-card">
+            <h3>{event.name}</h3>
+            <p>
+              {event.type} · {event.location}
+            </p>
+            <p>Required tier: {event.requiredTier}</p>
+          </div>
+        </Link>
       ))}
     </Container>
   );

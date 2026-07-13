@@ -1,0 +1,21 @@
+/* The whole card is a Link (an anchor). These rules stop the browser's
+   default link styling (blue text + underline) so it still reads as a card. */
+.event-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.event-card {
+  border: 1px solid #e0ddd6;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  background: #fff;
+  transition: box-shadow 0.15s ease;
+}
+
+/* subtle lift on hover so it's clear the card is clickable */
+.event-card-link:hover .event-card {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}

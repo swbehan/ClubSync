@@ -20,6 +20,7 @@ import DuesStatus from "./pages/member/dues-status/DuesStatus.jsx";
 import EventForm from "./pages/events/event-form/EventForm.jsx";
 import EventDetail from "./pages/events/event-detail/EventDetail.jsx";
 import ReviewDues from "./pages/treasurer/dues-verification/ReviewDues.jsx";
+import EventEditForm from "./pages/events/event-edit/EventEditForm.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -51,6 +52,7 @@ createRoot(document.getElementById("root")).render(
             />
             <Route path="/treasurer/group-form" element={<GroupForm />} />
             <Route path="/treasurer/review-dues" element={<ReviewDues />} />
+            <Route path="/admin/events/:id/edit" element={<EventEditForm />} />
           </Route>
 
           {/* Admin Role Pages */}

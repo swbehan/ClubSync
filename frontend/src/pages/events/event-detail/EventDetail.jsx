@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import Container from "react-bootstrap/Container";
+import { Button } from "react-bootstrap";
 import { useUser } from "../../../context/UserContext.jsx";
 import RSVPButton from "../rsvp-button/RSVPButton.jsx";
 import "./event-detail.css";
 
+
 export default function EventDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { user } = useUser();
 
   const [event, setEvent] = useState(null);
@@ -41,7 +44,25 @@ export default function EventDetail() {
       }
     };
     loadEvent();
-  }, [id, user]); // Page needs to be re-run if the URL id or the user changes)
+  }, [id, user]); // re-run if the URL id or the user changes
+
+  const handleCancel = async () => {
+    if (!window.confirm("Cancel this event? This cannot be undone.")) return;
+    try {
+      const res = await fetch(`/api/events/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        setError("Could not cancel the event");
+        return;
+      }
+      navigate("/member/events"); // event is gone → go back to the list
+    } catch (err) {
+      console.error("Cancel event failed", err);
+      setError("Something went wrong");
+    }
+  };
 
   if (loading) {
     return (
@@ -70,9 +91,18 @@ export default function EventDetail() {
 
       <RSVPButton eventId={event._id} />
 
-      {user && user.role == "admin" && (
+      {user && user.role === "admin" && (
         <div className="attendee-list mt-4">
           <h3>RSVPs ({attendees.length})</h3>
+          <Link
+            to={`/admin/events/${event._id}/edit`}
+            className="btn btn-outline-primary mb-3 me-2"
+          >
+            Edit
+          </Link>
+          <Button variant="danger" onClick={handleCancel} className="mb-3">
+            Cancel Event
+          </Button>
           {attendees.length === 0 && <p>No RSVPs yet</p>}
           {attendees.map((a) => (
             <p key={a.id}>
