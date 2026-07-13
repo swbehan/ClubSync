@@ -18,6 +18,7 @@ import AdminDashboard from "./pages/admin/admindashboard/AdminDashboard.jsx";
 import EventList from "./pages/events/event-list/EventList.jsx";
 import DuesStatus from "./pages/member/dues-status/DuesStatus.jsx";
 import EventForm from "./pages/events/event-form/EventForm.jsx";
+import EventDetail from "./pages/events/event-detail/EventDetail.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -37,6 +38,7 @@ createRoot(document.getElementById("root")).render(
               element={<MemberDashboard />}
             />
             <Route path="/member/events" element={<EventList />} />
+            <Route path="/member/events/:id" element={<EventDetail />}/>
             <Route path="/member/dues-status" element={<DuesStatus /> }/>
           </Route>
 

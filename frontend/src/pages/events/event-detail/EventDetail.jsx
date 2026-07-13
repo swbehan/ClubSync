@@ -1,0 +1,84 @@
+import { useState, useEffect } from "react";
+import { useParams } from "react-router";
+import Container from "react-bootstrap/Container";
+import { useUser } from "../../../context/UserContext.jsx"
+import RSVPButton from "../rsvp-button/RSVPButton.jsx";
+import "./event-detail.css";
+
+export default function EventDetail() { 
+    const { id } = useParams(); 
+    const { user } = useUser();
+
+    const [event, setEvent] = useState(null);
+    const [attendees, setAttendees] = useState([]);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadEvent = async () => { 
+            try { 
+                const res = await fetch(`/api/events/${id}`, { credentials: "include" });
+                if (!res.ok) { 
+                    setError("Could not load this event");
+                    return;
+                }
+                setEvent(await res.json());
+
+                // If the user is an admin then load who is attending as well
+                if (user && user.role === 'admin') { 
+                    const rsvpRes = await fetch(`/api/events/${id}/rsvps`, {
+                        credentials: "include",
+                    });
+                    if (rsvpRes.ok) setAttendees(await rsvpRes.json());
+                }
+            } catch(err) { 
+                console.error("failer to load event", err);
+                setError("Something went wrong");
+            } finally { 
+                setLoading(false);
+            }
+        };
+        loadEvent();
+    }, [id, user]); // Page needs to be re-run if the URL id or the user changes)
+
+    if (loading) { 
+        return (
+            <Container className="px-5">
+                <p>Loading</p>
+            </Container>
+        );
+    }
+    if (error) { 
+        return (
+            <Container className="px-5">
+                <p className="text-danger">{error}</p>
+            </Container>
+        );
+    }
+    if (!event) return null;
+
+    return (
+        <Container className="px-5">
+            <h1>{event.name}</h1>
+            <p>
+                {event.type} · {event.location}
+            </p>
+            <p>Date: {new Date(event.date).toLocaleDateString()}</p>
+            <p>Required tier: {event.requiredTier}</p>
+
+            <RSVPButton eventId={event._id} />
+
+            {user && user.role == 'admin' && (
+                <div className="attendee-list mt-4">
+                    <h3>RSVPs ({attendees.length})</h3>
+                    {attendees.length === 0 && <p>No RSVPs yet</p>}
+                    {attendees.map((a) => (
+                        <p key={a.id}>
+                            {a.firstName} {a.lastName} - {a.email}
+                        </p>
+                    ))}
+                </div>
+            )}
+        </Container>
+    );
+}
