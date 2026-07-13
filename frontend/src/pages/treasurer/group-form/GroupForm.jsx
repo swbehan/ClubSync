@@ -56,10 +56,10 @@ export default function GroupForm({ onCreated }) {
   // --- UI ------------------------------------------------------------------
   return (
     <div className="group-form">
-      <h2>Create a Group</h2>
+      <h2 className="moto">Create a Group</h2>
 
       {/* onSubmit fires on button click OR Enter key inside the form */}
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} className="spacing-after-moto">
         <Form.Group className="mb-3">
           <Form.Label>Group name</Form.Label>
           <Form.Control

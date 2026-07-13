@@ -20,7 +20,7 @@ const NAV_PAGES = {
   treasurer: [
     { to: "/treasurer/treasurer-dashboard", label: "Dashboard" },
     { to: "/treasurer/group-form", label: "Group Form" },
-    // { to: "/treasurer/dues-submissions", label: "Dues" },
+    { to: "/treasurer/review-dues", label: "Dues Review" },
   ],
   admin: [{ to: "/admin/admin-dashboard", label: "Dashboard" }],
 };

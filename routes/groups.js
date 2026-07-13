@@ -1,5 +1,7 @@
 import { Router } from "express";
 import groupsCollection from "../db/groups-db.js";
+import usersCollection from "../db/users-db.js";
+import duesSubmissionsCollection from "../db/dues-submissions-db.js";
 import { isAuthenticated, requireRole } from "../middleware/auth.js";
 
 const groupsRouter = Router();
@@ -29,6 +31,60 @@ groupsRouter.post("/", requireRole("treasurer"), async (req, res) => {
 
     }
 
+});
+
+// Starts a fresh semester: creates a new active group (new join code), then
+// rolls the previous roster over — staff carry into the new group, members are
+// detached to re-join, and the old term's pending dues are archived. No history
+// is kept beyond the soft archive.
+groupsRouter.post("/semester", requireRole("treasurer"), async (req, res) => {
+    try {
+        const { name } = req.body;
+        if (!name) {
+            return res.status(400).json({ message: "A semester name is required" });
+        }
+
+        // capture the outgoing semester before createGroup deactivates it.
+        const previous = await groupsCollection.findActiveGroup();
+
+        const result = await groupsCollection.createGroup({ name, createdBy: req.user._id });
+
+        if (previous) {
+            await usersCollection.rolloverGroupMembers(previous._id, result.id);
+            await duesSubmissionsCollection.archivePendingForGroup(previous._id);
+        }
+
+        res.status(201).json(result);
+    } catch (error) {
+        console.error("Error starting new semester", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
+// Lets a member join the club by entering the active semester's join code. Only
+// the active group's code works, so old-semester codes can't re-attach anyone.
+groupsRouter.post("/join", isAuthenticated, async (req, res) => {
+    try {
+        const { joinCode } = req.body;
+        if (!joinCode) {
+            return res.status(400).json({ message: "A join code is required" });
+        }
+
+        const group = await groupsCollection.findGroupByJoinCode(joinCode.trim());
+        if (!group || !group.active) {
+            return res.status(404).json({ message: "That join code is not valid" });
+        }
+
+        const updated = await usersCollection.joinClub(req.user._id, group._id);
+        if (!updated) {
+            return res.status(400).json({ message: "Could not join the group" });
+        }
+
+        res.json({ groupId: group._id, groupName: group.name });
+    } catch (error) {
+        console.error("Error joining group", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 });
 
 groupsRouter.get("/active", isAuthenticated, async (req, res) => {

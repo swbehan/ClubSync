@@ -44,6 +44,34 @@ duesRouter.post("/submit", isAuthenticated, async (req, res) => {
 });
 
 // ----------------------------
+// GET MY LATEST DUES SUBMISSION
+// ----------------------------
+duesRouter.get("/mine", isAuthenticated, async (req, res) => {
+  try {
+    const submission = await duesSubmissionsCollection.getLatestForUser(
+      req.user._id
+    );
+
+    if (!submission) {
+      return res.json({ submission: null });
+    }
+
+    res.json({
+      submission: {
+        status: submission.status,
+        tier: submission.tier,
+        reviewNote: submission.reviewNote,
+        submittedAt: submission.submittedAt,
+        reviewedAt: submission.reviewedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching your dues submission", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// ----------------------------
 // GET DUES STATS
 // ----------------------------
 duesRouter.get(
@@ -96,6 +124,50 @@ duesRouter.get(
       res.json({ total, pending });
     } catch (error) {
       console.error("Error fetching pending dues", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+);
+
+// ----------------------------
+// UPDATE A PENDING DUE SUBMISSION
+// ----------------------------
+duesRouter.patch(
+  "/review/:submissionId",
+  requireRole("treasurer"),
+  async (req, res) => {
+    try {
+      const { decision, reviewNote } = req.body ?? {};
+
+      if (!["approved", "denied"].includes(decision)) {
+        return res
+          .status(400)
+          .json({ message: "An approved or denied decision is required" });
+      }
+
+      const note = decision === "denied" ? (reviewNote ?? "").trim() : null;
+      if (decision === "denied" && !note) {
+        return res
+          .status(400)
+          .json({ message: "A reason is required to deny a submission" });
+      }
+
+      const submission = await duesSubmissionsCollection.reviewSubmission(
+        req.params.submissionId,
+        { status: decision, reviewNote: note, reviewedBy: req.user._id }
+      );
+
+      if (!submission) {
+        return res
+          .status(409)
+          .json({ message: "Submission not found or already reviewed" });
+      }
+
+      await usersCollection.setDuesStatus(submission.userId, decision);
+
+      res.json({ submissionId: submission._id, status: submission.status });
+    } catch (error) {
+      console.error("Error reviewing dues submission", error);
       res.status(500).json({ message: "Internal Server Error" });
     }
   }

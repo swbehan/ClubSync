@@ -18,3 +18,16 @@
   border: 1px dashed #c1512d;
   border-radius: 8px;
 }
+
+/* ===========================================================================
+   FULL REVIEW MODE: CLICKABLE PENDING ROW
+   =========================================================================== */
+.dues-review-row {
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.dues-review-row:hover {
+  background-color: rgba(42, 38, 34, 0.05);
+}

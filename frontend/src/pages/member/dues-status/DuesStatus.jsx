@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useUser } from "../../../context/UserContext.jsx";
@@ -15,8 +16,23 @@ export default function DuesStatus() {
   const [tier, setTier] = useState("gold");
   const [paymentReference, setPaymentReference] = useState("");
   const [error, setError] = useState("");
+  const [latest, setLatest] = useState(null);
 
   const canSubmit = SUBMITTABLE.includes(user?.duesStatus || "not_submitted");
+
+  useEffect(() => {
+    const loadLatest = async () => {
+      try {
+        const res = await fetch("/api/dues/mine", { credentials: "include" });
+        if (!res.ok) return;
+        const data = await res.json();
+        setLatest(data.submission);
+      } catch (err) {
+        console.error("Failed to load your dues submission", err);
+      }
+    };
+    loadLatest();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,6 +66,15 @@ export default function DuesStatus() {
     <div className="dues-status px-5">
       <h1 className="moto">Submit Your Dues</h1>
 
+      {user?.duesStatus === "denied" && latest?.reviewNote && (
+        <Alert variant="warning" className="spacing-after-moto">
+          <Alert.Heading className="h6">
+            Your last submission was denied
+          </Alert.Heading>
+          <p className="mb-0">{latest.reviewNote}</p>
+        </Alert>
+      )}
+
       {!canSubmit ? (
         <p className="spacing-after-moto">
           Your dues are already{" "}
@@ -59,8 +84,7 @@ export default function DuesStatus() {
       ) : (
         <Form
           onSubmit={handleSubmit}
-          className="mt-3"
-          style={{ maxWidth: 480 }}
+          className="mt-3 spacing-after-moto"
         >
           <Form.Group className="mb-3">
             <Form.Label>Membership tier</Form.Label>

@@ -7,6 +7,7 @@ const SUBMISSION_STATUS = {
   PENDING: "pending",
   APPROVED: "approved",
   DENIED: "denied",
+  ARCHIVED: "archived",
 };
 
 function DuesSubmissionsCollection({
@@ -71,6 +72,71 @@ function DuesSubmissionsCollection({
       return { total, items };
     } catch (error) {
       console.error("Error fetching pending dues submissions", error);
+      throw error;
+    }
+  };
+
+  // Fetches a member's most recent submission (newest first), or null if they
+  // have never submitted. Lets a member see the outcome of their last attempt,
+  // e.g. the treasurer's reviewNote after a denial.
+  me.getLatestForUser = async (userId) => {
+    try {
+      if (!ObjectId.isValid(userId)) return null;
+      const items = await submissions
+        .find({ userId: new ObjectId(userId) })
+        .sort({ submittedAt: -1 })
+        .limit(1)
+        .toArray();
+      return items[0] ?? null;
+    } catch (error) {
+      console.error("Error fetching latest dues submission", error);
+      throw error;
+    }
+  };
+
+  // Transitions a pending submission to approved/denied and stamps who
+  // reviewed it and when.
+  me.reviewSubmission = async (
+    submissionId,
+    { status, reviewNote = null, reviewedBy }
+  ) => {
+    try {
+      if (!ObjectId.isValid(submissionId)) return null;
+      const updated = await submissions.findOneAndUpdate(
+        { _id: new ObjectId(submissionId), status: SUBMISSION_STATUS.PENDING },
+        {
+          $set: {
+            status,
+            reviewNote,
+            reviewedBy: ObjectId.isValid(reviewedBy)
+              ? new ObjectId(reviewedBy)
+              : reviewedBy,
+            reviewedAt: new Date(),
+          },
+        },
+        { returnDocument: "after" }
+      );
+      return updated;
+    } catch (error) {
+      console.error("Error reviewing dues submission", error);
+      throw error;
+    }
+  };
+
+  // Closes out a group's still-pending submissions when a new semester starts.
+  // Old-term rows are kept (soft archive) but flipped out of the pending queue.
+  me.archivePendingForGroup = async (groupId) => {
+    try {
+      const groupFilter = ObjectId.isValid(groupId)
+        ? new ObjectId(groupId)
+        : groupId;
+      const result = await submissions.updateMany(
+        { groupId: groupFilter, status: SUBMISSION_STATUS.PENDING },
+        { $set: { status: SUBMISSION_STATUS.ARCHIVED, reviewedAt: new Date() } }
+      );
+      return result.modifiedCount;
+    } catch (error) {
+      console.error("Error archiving pending submissions", error);
       throw error;
     }
   };

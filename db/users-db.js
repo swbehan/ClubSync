@@ -72,6 +72,53 @@ function UsersCollection({ collectionName = "users" } = {}) {
     }
   };
 
+  // Rolls a group's roster into a new semester. Staff (treasurer/admin) carry
+  // over to the new group so they keep running the club, while members are
+  // detached and must re-join with the new code. Everyone's dues reset to
+  // not_submitted for the fresh term.
+  me.rolloverGroupMembers = async (previousGroupId, newGroupId) => {
+    try {
+      const previousFilter = ObjectId.isValid(previousGroupId)
+        ? new ObjectId(previousGroupId)
+        : previousGroupId;
+      const nextGroupId = ObjectId.isValid(newGroupId)
+        ? new ObjectId(newGroupId)
+        : newGroupId;
+
+      // staff stay attached to run the new semester.
+      const staff = await users.updateMany(
+        { groupId: previousFilter, role: { $in: ["treasurer", "admin"] } },
+        {
+          $set: {
+            groupId: nextGroupId,
+            duesStatus: DUES_STATUS.NOT_SUBMITTED,
+            duesTier: "null",
+          },
+        }
+      );
+
+      // members drop off; they re-join the new semester with the new code.
+      const members = await users.updateMany(
+        { groupId: previousFilter, role: "member" },
+        {
+          $set: {
+            groupId: null,
+            duesStatus: DUES_STATUS.NOT_SUBMITTED,
+            duesTier: "null",
+          },
+        }
+      );
+
+      return {
+        staffCarried: staff.modifiedCount,
+        membersDetached: members.modifiedCount,
+      };
+    } catch (error) {
+      console.error("Error rolling over group members", error);
+      throw error;
+    }
+  };
+
   // edit operation on a user document in the users collection that will update the groupId field
   // so that the user is tied to a club/group and is allowed to view a dashboard
   me.joinClub = async (userId, groupId) => {
@@ -167,6 +214,24 @@ function UsersCollection({ collectionName = "users" } = {}) {
         .toArray();
     } catch (error) {
       console.error("Error finding users by ids", error);
+      throw error;
+    }
+  };
+
+  // mirrors a treasurers dues decision onto the member's own document so the
+  // member dashboard reflects approved/denied. A denied member may resubmit and
+  // Only moves a member who is still PENDING.
+  me.setDuesStatus = async (userId, duesStatus) => {
+    try {
+      if (!ObjectId.isValid(userId)) return null;
+      const updated = await users.findOneAndUpdate(
+        { _id: new ObjectId(userId), duesStatus: DUES_STATUS.PENDING },
+        { $set: { duesStatus } },
+        { returnDocument: "after" }
+      );
+      return updated;
+    } catch (error) {
+      console.error("Error setting dues status", error);
       throw error;
     }
   };

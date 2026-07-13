@@ -2,6 +2,7 @@ import { Container, Row } from "react-bootstrap";
 import { useUser } from "../../../context/UserContext.jsx";
 import DuesStatWidget from "./dues-stat-widget/DuesStatWidget.jsx";
 import DuesVerificationWidget from "./dues-verification-widget/DuesVerificationWidget.jsx";
+import NewSemesterWidget from "./new-semester-widget/NewSemesterWidget.jsx";
 import { useState, useEffect } from "react";
 
 export default function TreasurerDashboard() {
@@ -55,10 +56,9 @@ export default function TreasurerDashboard() {
           count={stats.silver}
           context="Includes all members approved with Silver tier dues."
         />
-        <DuesVerificationWidget/>
+        <DuesVerificationWidget previewLimit={5}/>
+        <NewSemesterWidget />
       </Row>
     </Container>
   );
 }
-
-// <StartNewGroupWidget />

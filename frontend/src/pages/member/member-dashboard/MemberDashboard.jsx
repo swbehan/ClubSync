@@ -1,6 +1,8 @@
 import { Container, Row } from "react-bootstrap";
 import { useUser } from "../../../context/UserContext.jsx";
 import DuesWidget from "./member-dues-widget/DuesWidget.jsx";
+import JoinGroupWidget from "./join-group-widget/JoinGroupWidget.jsx";
+import GroupWidget from "./group-widget/GroupWidget.jsx";
 
 export default function MemberDashboard() {
   const { user } = useUser();
@@ -12,8 +14,16 @@ export default function MemberDashboard() {
       </p>
 
       <Row className="justify-content-center gy-4">
-        <DuesWidget user={user}/>
-
+        {/* a member must be on a semester's roster before anything else, so we
+            gate the group + dues overview behind joining the active group. */}
+        {user?.groupId ? (
+          <>
+            <DuesWidget user={user} />
+            <GroupWidget />
+          </>
+        ) : (
+          <JoinGroupWidget />
+        )}
       </Row>
     </Container>
   );

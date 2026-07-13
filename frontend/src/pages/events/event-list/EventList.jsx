@@ -48,10 +48,10 @@ export default function EventList() {
     // Once there is a successful load then show the list
     return (
         <Container className="px-5">
-        <h1>Events</h1>
+        <h1 className="moto">Events</h1>
 
         {/* empty-state message when there are no events */}
-        {events.length === 0 && <p>No events yet.</p>}
+        {events.length === 0 && <p className="spacing-after-moto">No events yet.</p>}
 
         {/* turn each event object into a card; key must be unique + stable */}
         {events.map((event) => (

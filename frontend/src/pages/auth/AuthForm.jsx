@@ -44,8 +44,8 @@ export default function AuthForm({
 
   return (
     <>
-      <h1>{heading}</h1>
-      <Form onSubmit={handleSubmit}>
+      <h1 className="moto">{heading}</h1>
+      <Form onSubmit={handleSubmit} className="spacing-after-moto">
         {fields.map((field) => (
           <Form.Group className="mb-3" key={field.name}>
             <Form.Label>{field.label}</Form.Label>
