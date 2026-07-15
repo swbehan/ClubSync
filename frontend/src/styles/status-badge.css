@@ -32,6 +32,11 @@
   color: #ffffff;
 }
 
+.status-badge.none {
+  background-color: #e8e0d0;
+  color: #2a2622;
+}
+
 .status-badge.gold {
   background-color: #c9a227;
   color: #2a2622;

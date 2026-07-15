@@ -1,25 +1,10 @@
-/* =========================== 
-     MOTO SECTION
-   ========================= */
-.moto {
-  color: #2a2622;
-  text-align: center;
-  font-size: 2.5rem;
-  margin: 50px auto 0;
-  max-width: 900px;
-  padding: 1rem 2rem;
-  border-radius: 41px;
-  border: 3px solid #d8c9a8;
-  background-color: #f2ede3;
-  animation: slideDown 1.8s ease forwards;
-}
+/* ===========================================================================
+   HOMEPAGE-SPECIFIC STYLES
+   Shared typography (.moto, .lead-text, .spacing-after-moto, .role-card) and
+   the slideDown keyframe now live in styles/base.css.
+   =========================================================================== */
 
-.spacing-after-moto {
-  text-align: center;
-  margin-top: 40px;
-}
-
-/* =========================== 
+/* ===========================
      HERO IMAGE COLUMN
    ========================= */
 .hero-img-col {
@@ -27,7 +12,7 @@
   animation: slideDown 2.8s ease forwards;
 }
 
-/* =========================== 
+/* ===========================
      HERO IMAGE STYLES
    ========================= */
 .hero-img {
@@ -39,7 +24,7 @@
   border: 3px solid #d8c9a8;
 }
 
-/* =========================== 
+/* ===========================
      SECTION HEADER
    ========================= */
 .what-is-this {
@@ -52,19 +37,7 @@
   animation: slideDown 3.8s ease forwards;
 }
 
-/* =========================== 
-     LEAD BODY TEXT
-   ========================= */
-.lead-text {
-  font-family: "Lexend Deca", sans-serif;
-  font-weight: 400;
-  font-size: 1.2rem;
-  line-height: 1.7;
-  color: #2a2622;
-  margin-bottom: 3rem;
-}
-
-/* =========================== 
+/* ===========================
      INTRODUCTION COLUMN
    ========================= */
 .intro-col {
@@ -72,18 +45,7 @@
   margin-top: 2.5rem;
 }
 
-/* =========================== 
-     ROLE SELECTION CARD
-   ========================= */
-.role-card {
-  text-align: center;
-  margin-top: 2rem;
-  padding: 1.5rem 1rem;
-  background-color: #f2ede3;
-  border-radius: 12px;
-}
-
-/* =========================== 
+/* ===========================
      ROLE CARD TITLE
    ========================= */
 .role-title {
@@ -92,7 +54,7 @@
   margin-bottom: 0.5rem;
 }
 
-/* =========================== 
+/* ===========================
      FOOTNOTE TEXT
    ========================= */
 .note-text {
@@ -103,25 +65,11 @@
   color: #6b5f4f;
 }
 
-/* =========================== 
+/* ===========================
      CALL TO ACTION ROW
    ========================= */
 .cta-row {
   margin-top: 1.5rem;
   margin-bottom: 4rem;
   text-align: center;
-}
-
-/* =========================== 
-     KEYFRAME ANIMATIONS 
-   ========================= */
-@keyframes slideDown {
-  from {
-    transform: translateY(-30px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
