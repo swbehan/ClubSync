@@ -3,6 +3,7 @@ import { useUser } from "../../../context/UserContext.jsx";
 import DuesWidget from "./member-dues-widget/DuesWidget.jsx";
 import JoinGroupWidget from "./join-group-widget/JoinGroupWidget.jsx";
 import GroupWidget from "./group-widget/GroupWidget.jsx";
+import EligibleEventsWidget from "./eligible-events-widget/EligibleEventsWidget.jsx";
 
 export default function MemberDashboard() {
   const { user } = useUser();
@@ -21,6 +22,7 @@ export default function MemberDashboard() {
           <>
             <DuesWidget user={user} />
             <GroupWidget />
+            <EligibleEventsWidget previewLimit={5} />
           </>
         ) : (
           <JoinGroupWidget />

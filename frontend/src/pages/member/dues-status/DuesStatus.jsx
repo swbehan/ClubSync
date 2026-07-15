@@ -17,6 +17,7 @@ export default function DuesStatus() {
   const [paymentReference, setPaymentReference] = useState("");
   const [error, setError] = useState("");
   const [latest, setLatest] = useState(null);
+  const [withdrawing, setWithdrawing] = useState(false);
 
   const canSubmit = SUBMITTABLE.includes(user?.duesStatus || "not_submitted");
 
@@ -33,6 +34,32 @@ export default function DuesStatus() {
     };
     loadLatest();
   }, []);
+
+  // withdraws a still pending submission so the member can start over. Resets
+  // context back to not_submitted, which shows the submission form again
+  const handleWithdraw = async () => {
+    if (!latest?.submissionId) return;
+    setWithdrawing(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/dues/${latest.submissionId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.message || "Could not withdraw your submission.");
+        return;
+      }
+      setLatest(null);
+      setUser({ ...user, duesStatus: "not_submitted" });
+    } catch (err) {
+      console.error("Withdraw dues request failed", err);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setWithdrawing(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,11 +103,27 @@ export default function DuesStatus() {
       )}
 
       {!canSubmit ? (
-        <p className="spacing-after-moto">
-          Your dues are already{" "}
-          <strong>{(user?.duesStatus || "").replace("_", " ")}</strong>. There
-          is nothing to submit right now.
-        </p>
+        <div className="spacing-after-moto">
+          <p>
+            Your dues are already{" "}
+            <strong>{(user?.duesStatus || "").replace("_", " ")}</strong>. There
+            is nothing to submit right now.
+          </p>
+
+          {/* a pending submission can still be withdrawn if it was a mistake. */}
+          {user?.duesStatus === "pending" && (
+            <>
+              <Button
+                variant="outline-danger"
+                onClick={handleWithdraw}
+                disabled={withdrawing}
+              >
+                Withdraw Submission
+              </Button>
+              {error && <div className="text-danger mt-3">{error}</div>}
+            </>
+          )}
+        </div>
       ) : (
         <Form onSubmit={handleSubmit} className="mt-3 spacing-after-moto">
           <Form.Group className="mb-3">

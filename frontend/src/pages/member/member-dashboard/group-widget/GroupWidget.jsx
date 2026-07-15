@@ -27,7 +27,7 @@ export default function GroupWidget() {
   }, [user?.groupId]);
 
   return (
-    <Col xs={12} md={6} lg={5} className="role-card member-dues-widget">
+    <Col xs={12} md={6} lg={6} className="role-card member-dues-widget">
       <GroupCard group={group} />
     </Col>
   );
