@@ -2,6 +2,7 @@ import SideBar from "./sidebar/SideBar.jsx";
 import NavBar from "./navbar/NavBar.jsx";
 import { useState, useEffect } from "react";
 import { UserContext } from "../../context/UserContext.jsx";
+import PropTypes from "prop-types";
 
 export default function BasePage({ children }) {
   const [user, setUser] = useState(null);
@@ -46,3 +47,7 @@ export default function BasePage({ children }) {
     </UserContext.Provider>
   );
 }
+
+BasePage.propTypes = {
+  children: PropTypes.node,
+};

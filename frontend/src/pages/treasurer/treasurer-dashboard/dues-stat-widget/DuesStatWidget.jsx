@@ -1,6 +1,6 @@
 import { Col } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
-import "./dues-stat-widget.css";
+import PropTypes from "prop-types";
 
 export default function DuesStatWidget({
   title,
@@ -37,3 +37,12 @@ export default function DuesStatWidget({
     </Col>
   );
 }
+
+DuesStatWidget.propTypes = {
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  label: PropTypes.string,
+  count: PropTypes.number,
+  total: PropTypes.number,
+  context: PropTypes.string,
+};

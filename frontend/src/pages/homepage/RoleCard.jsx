@@ -1,4 +1,5 @@
 import { Col } from "react-bootstrap";
+import PropTypes from "prop-types";
 
 export default function RoleCard({ title, text }) {
   return (
@@ -8,3 +9,8 @@ export default function RoleCard({ title, text }) {
     </Col>
   );
 }
+
+RoleCard.propTypes = {
+  title: PropTypes.string,
+  text: PropTypes.string,
+};

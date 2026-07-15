@@ -1,5 +1,6 @@
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import PropTypes from "prop-types";
 
 // The semester overview card: current semester name, the active join code, and
 // the button that opens the start-new-semester confirmation.
@@ -36,3 +37,11 @@ export default function SemesterCard({ active, onStart }) {
     </Card>
   );
 }
+
+SemesterCard.propTypes = {
+  active: PropTypes.shape({
+    name: PropTypes.string,
+    joinCode: PropTypes.string,
+  }),
+  onStart: PropTypes.func,
+};

@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router";
 import { useUser } from "../../context/UserContext.jsx";
+import PropTypes from "prop-types";
 
 export default function ProtectedRoute({ allow }) {
   const { user, loading } = useUser();
@@ -14,3 +15,7 @@ export default function ProtectedRoute({ allow }) {
   }
   return <Outlet />;
 }
+
+ProtectedRoute.propTypes = {
+  allow: PropTypes.arrayOf(PropTypes.string),
+};

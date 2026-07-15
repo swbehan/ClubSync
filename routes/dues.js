@@ -58,6 +58,7 @@ duesRouter.get("/mine", isAuthenticated, async (req, res) => {
 
     res.json({
       submission: {
+        submissionId: submission._id,
         status: submission.status,
         tier: submission.tier,
         reviewNote: submission.reviewNote,
@@ -67,6 +68,31 @@ duesRouter.get("/mine", isAuthenticated, async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching your dues submission", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// ----------------------------
+// DELETE (WITHDRAW) MY DUES SUBMISSION
+// ----------------------------
+duesRouter.delete("/:submissionId", isAuthenticated, async (req, res) => {
+  try {
+    const deleted = await duesSubmissionsCollection.deleteSubmission(
+      req.params.submissionId,
+      req.user._id
+    );
+
+    if (!deleted) {
+      return res
+        .status(404)
+        .json({ message: "No pending submission found to withdraw" });
+    }
+
+    await usersCollection.setDuesStatus(req.user._id, "not_submitted");
+
+    res.json({ submissionId: deleted._id });
+  } catch (error) {
+    console.error("Error withdrawing dues submission", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

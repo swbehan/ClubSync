@@ -1,4 +1,5 @@
 import { Modal, Button, Form } from "react-bootstrap";
+import PropTypes from "prop-types";
 
 const formatDate = (value) =>
   value ? new Date(value).toLocaleDateString() : "—";
@@ -106,3 +107,29 @@ export default function DuesReviewModal({
     </Modal>
   );
 }
+
+DetailRow.propTypes = {
+  label: PropTypes.string,
+  children: PropTypes.node,
+  className: PropTypes.string,
+};
+
+DuesReviewModal.propTypes = {
+  submission: PropTypes.shape({
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    email: PropTypes.string,
+    submittedAt: PropTypes.string,
+    tier: PropTypes.string,
+    paymentReference: PropTypes.string,
+  }),
+  show: PropTypes.bool,
+  decision: PropTypes.string,
+  setDecision: PropTypes.func,
+  denyReason: PropTypes.string,
+  setDenyReason: PropTypes.func,
+  submitting: PropTypes.bool,
+  error: PropTypes.string,
+  onHide: PropTypes.func,
+  onSubmit: PropTypes.func,
+};

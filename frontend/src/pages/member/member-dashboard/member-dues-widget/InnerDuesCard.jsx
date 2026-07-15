@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 export default function InnerDuesCard({ componentInfo }) {
   const { header, subheader, context } = componentInfo;
   return (
@@ -8,3 +10,11 @@ export default function InnerDuesCard({ componentInfo }) {
     </>
   );
 }
+
+InnerDuesCard.propTypes = {
+  componentInfo: PropTypes.shape({
+    header: PropTypes.string,
+    subheader: PropTypes.string,
+    context: PropTypes.string,
+  }).isRequired,
+};

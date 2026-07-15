@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import { Link } from "react-router";
 import InnerDuesCard from "./InnerDuesCard";
 import "./dues-widget.css";
+import PropTypes from "prop-types";
 
 const TIER_LABELS = {
   silver: "Silver",
@@ -42,7 +43,7 @@ export default function DuesWidget({ user }) {
   const content = DUES_CONTENT_MAP[statusKey];
 
   return (
-    <Col xs={12} md={6} lg={5} className="role-card member-dues-widget">
+    <Col xs={12} md={6} lg={6} className="role-card member-dues-widget">
       <Card className="h-100 dues-card d-flex flex-column justify-content-between">
         <Card.Body className="d-flex flex-column">
           <Card.Title>Financial Overview</Card.Title>
@@ -84,3 +85,10 @@ export default function DuesWidget({ user }) {
     </Col>
   );
 }
+
+DuesWidget.propTypes = {
+  user: PropTypes.shape({
+    duesStatus: PropTypes.string,
+    duesTier: PropTypes.string,
+  }),
+};

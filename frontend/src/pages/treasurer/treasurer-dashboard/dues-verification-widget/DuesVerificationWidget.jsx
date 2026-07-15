@@ -1,9 +1,21 @@
-import { Col } from "react-bootstrap";
-import Card from "react-bootstrap/Card";
 import { useState, useEffect } from "react";
 import { useUser } from "../../../../context/UserContext.jsx";
-import PendingDuesList from "./PendingDuesList.jsx";
+import WidgetCard from "../../../../components/widget/WidgetCard.jsx";
+import PreviewList from "../../../../components/widget/PreviewList.jsx";
 import DuesReviewModal from "./DuesReviewModal.jsx";
+import PropTypes from "prop-types";
+
+// column config for the pending-dues list (see PreviewList).
+const COLUMNS = [
+  { label: "Name", size: 2, render: (m) => `${m.firstName} ${m.lastName}` },
+  { label: "Email", size: 7, render: (m) => m.email },
+  {
+    label: "Dues Tier",
+    size: 3,
+    align: "end",
+    render: (m) => <span className={`status-badge ${m.tier}`}>{m.tier}</span>,
+  },
+];
 
 export default function DuesVerificationWidget({ previewLimit = 0 }) {
   const [pending, setPending] = useState([]);
@@ -13,6 +25,7 @@ export default function DuesVerificationWidget({ previewLimit = 0 }) {
   const [denyReason, setDenyReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  // bumped after a successful review so the effect below refetches the queue.
   const [refreshKey, setRefreshKey] = useState(0);
   const { user } = useUser();
 
@@ -85,34 +98,34 @@ export default function DuesVerificationWidget({ previewLimit = 0 }) {
   };
 
   return (
-    <Col xs={12} md={12} lg={12} className="role-card dues-stat-widget">
-      <Card className="h-100 dues-card d-flex flex-column justify-content-between">
-        <Card.Body className="d-flex flex-column">
-          <Card.Title>Pending Dues Verification</Card.Title>
-          <Card.Subtitle className="mb-2 d-flex align-items-center justify-content-between w-100">
-            Members Awaiting Approval
-            <span className="status-badge approved">{total} Pending</span>
-          </Card.Subtitle>
-
-          <PendingDuesList
-            pending={pending}
-            total={total}
-            isPreview={isPreview}
-            onSelect={openReview}
-          />
-        </Card.Body>
-        {isPreview && (
-          <>
-            <span>
-              Only displays up to 5 members with the oldest dues submissions
-            </span>
-            <span>
-              To view all dues submissions navigate to the dues tab on the nav
-              bar
-            </span>
-          </>
-        )}
-      </Card>
+    <>
+      <WidgetCard
+        title="Pending Dues Verification"
+        subtitle="Members Awaiting Approval"
+        badge={`${total} Pending`}
+        footer={
+          isPreview && (
+            <>
+              <span>
+                Only displays up to 5 members with the oldest dues submissions
+              </span>
+              <span>
+                To view all dues submissions navigate to the dues tab on the nav
+                bar
+              </span>
+            </>
+          )
+        }
+      >
+        <PreviewList
+          columns={COLUMNS}
+          items={pending}
+          total={total}
+          emptyMessage="No members are awaiting dues approval."
+          onSelect={isPreview ? undefined : openReview}
+          rowKey={(m) => m.submissionId}
+        />
+      </WidgetCard>
 
       <DuesReviewModal
         submission={selected}
@@ -126,6 +139,10 @@ export default function DuesVerificationWidget({ previewLimit = 0 }) {
         onHide={closeReview}
         onSubmit={submitReview}
       />
-    </Col>
+    </>
   );
 }
+
+DuesVerificationWidget.propTypes = {
+  previewLimit: PropTypes.number,
+};

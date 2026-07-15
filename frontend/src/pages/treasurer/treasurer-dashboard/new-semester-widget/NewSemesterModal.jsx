@@ -1,4 +1,5 @@
 import { Modal, Button, Form } from "react-bootstrap";
+import PropTypes from "prop-types";
 
 // Confirmation modal for the destructive start-new-semester action: warns about
 // the roster reset and collects the new term's name before the parent submits.
@@ -44,3 +45,13 @@ export default function NewSemesterModal({
     </Modal>
   );
 }
+
+NewSemesterModal.propTypes = {
+  show: PropTypes.bool,
+  name: PropTypes.string,
+  setName: PropTypes.func,
+  submitting: PropTypes.bool,
+  error: PropTypes.string,
+  onHide: PropTypes.func,
+  onConfirm: PropTypes.func,
+};

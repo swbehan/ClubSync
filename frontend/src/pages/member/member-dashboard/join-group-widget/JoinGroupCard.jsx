@@ -1,6 +1,7 @@
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import PropTypes from "prop-types";
 
 // Presentational join-by-code card: a member enters the club's active join code
 // to attach themselves to the current semester's roster.
@@ -47,3 +48,11 @@ export default function JoinGroupCard({
     </Card>
   );
 }
+
+JoinGroupCard.propTypes = {
+  joinCode: PropTypes.string,
+  setJoinCode: PropTypes.func,
+  onSubmit: PropTypes.func,
+  submitting: PropTypes.bool,
+  error: PropTypes.string,
+};

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import PropTypes from "prop-types";
 
 // this component owns the error state and the submit/fetch/error boilerplate.
 export default function AuthForm({
@@ -70,3 +71,13 @@ export default function AuthForm({
     </>
   );
 }
+
+AuthForm.propTypes = {
+  heading: PropTypes.string,
+  fields: PropTypes.array,
+  endpoint: PropTypes.string.isRequired,
+  submitLabel: PropTypes.string,
+  errorFallback: PropTypes.string,
+  onSuccess: PropTypes.func,
+  children: PropTypes.node,
+};

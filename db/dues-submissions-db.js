@@ -123,6 +123,26 @@ function DuesSubmissionsCollection({
     }
   };
 
+  // Withdraws a member's own submission. Scoped to userId (so one member can't
+  // delete another's) and to PENDING (an already-reviewed submission can't be
+  // yanked). Returns the deleted doc, or null if nothing matched.
+  me.deleteSubmission = async (submissionId, userId) => {
+    try {
+      if (!ObjectId.isValid(submissionId) || !ObjectId.isValid(userId)) {
+        return null;
+      }
+      const deleted = await submissions.findOneAndDelete({
+        _id: new ObjectId(submissionId),
+        userId: new ObjectId(userId),
+        status: SUBMISSION_STATUS.PENDING,
+      });
+      return deleted;
+    } catch (error) {
+      console.error("Error deleting dues submission", error);
+      throw error;
+    }
+  };
+
   // Closes out a group's still-pending submissions when a new semester starts.
   // Old-term rows are kept (soft archive) but flipped out of the pending queue.
   me.archivePendingForGroup = async (groupId) => {

@@ -1,4 +1,5 @@
 import Card from "react-bootstrap/Card";
+import PropTypes from "prop-types";
 
 // Presentational card showing the club/semester the member belongs to and
 // whether that semester is still the active one.
@@ -32,3 +33,11 @@ export default function GroupCard({ group }) {
     </Card>
   );
 }
+
+GroupCard.propTypes = {
+  group: PropTypes.shape({
+    name: PropTypes.string,
+    joinCode: PropTypes.string,
+    active: PropTypes.bool,
+  }),
+};

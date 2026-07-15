@@ -1,5 +1,6 @@
 import Nav from "react-bootstrap/Nav";
 import { Link, useLocation } from "react-router";
+import PropTypes from "prop-types";
 
 export default function SidebarNavItem({ page }) {
   const { pathname } = useLocation();
@@ -28,3 +29,14 @@ export default function SidebarNavItem({ page }) {
     </div>
   );
 }
+
+SidebarNavItem.propTypes = {
+  page: PropTypes.shape({
+    to: PropTypes.string,
+    role: PropTypes.string,
+    label: PropTypes.string,
+    imageSrc: PropTypes.string,
+    alt: PropTypes.string,
+    children: PropTypes.array,
+  }).isRequired,
+};
