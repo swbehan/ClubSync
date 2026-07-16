@@ -23,6 +23,7 @@ import EventForm from "./pages/events/event-form/EventForm.jsx";
 import EventDetail from "./pages/events/event-detail/EventDetail.jsx";
 import ReviewDues from "./pages/treasurer/dues-verification/ReviewDues.jsx";
 import EventEditForm from "./pages/events/event-edit/EventEditForm.jsx";
+import MyRsvps from "./pages/events/my-rsvps/MyRsvps.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -43,6 +44,7 @@ createRoot(document.getElementById("root")).render(
             />
             <Route path="/member/events" element={<EventList />} />
             <Route path="/member/events/:id" element={<EventDetail />} />
+            <Route path="/member/my-rsvps" element={<MyRsvps />} />
             <Route path="/member/dues-status" element={<DuesStatus />} />
           </Route>
 
@@ -54,13 +56,13 @@ createRoot(document.getElementById("root")).render(
             />
             <Route path="/treasurer/group-form" element={<GroupForm />} />
             <Route path="/treasurer/review-dues" element={<ReviewDues />} />
-            <Route path="/admin/events/:id/edit" element={<EventEditForm />} />
           </Route>
 
           {/* Admin Role Pages */}
           <Route element={<ProtectedRoute allow={["admin"]} />}>
             <Route path="/admin/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin/event-form" element={<EventForm />} />
+            <Route path="/admin/events/:id/edit" element={<EventEditForm />} />
           </Route>
         </Routes>
       </BasePage>

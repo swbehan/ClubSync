@@ -78,6 +78,25 @@ eventRouter.post("/", requireRole("admin"), async (req, res) => {
   }
 });
 
+// GET /api/events/mine — events in the active group the current user RSVP'd to.
+// MUST stay above "/:id" or Express treats "mine" as an event id.
+eventRouter.get("/mine", isAuthenticated, async (req, res) => {
+  try {
+    const activeGroup = await groupsCollection.findActiveGroup();
+    if (!activeGroup) {
+      return res.json([]);
+    }
+    const events = await eventsCollection.getEventsForUser(
+      req.user._id,
+      activeGroup._id
+    );
+    res.json(events);
+  } catch (error) {
+    console.error("Error fetching your RSVPs", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 eventRouter.get("/:id", isAuthenticated, async (req, res) => {
   try {
     const event = await eventsCollection.findEventById(req.params.id);

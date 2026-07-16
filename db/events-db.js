@@ -48,6 +48,20 @@ function EventsCollection({ collectionName = "events" } = {}) {
     }
   };
 
+  // Events in a group that the given user has RSVP'd to. Mongo matches an
+  // array field ("rsvps") against a single value by checking membership.
+  me.getEventsForUser = async (userId, groupId) => {
+    try {
+      if (!ObjectId.isValid(userId)) return [];
+      return await events
+        .find({ groupId, rsvps: new ObjectId(userId) })
+        .toArray();
+    } catch (error) {
+      console.error("Error finding events for user", error);
+      throw error;
+    }
+  };
+
   me.findEventById = async (id) => {
     try {
       if (!ObjectId.isValid(id)) return null;

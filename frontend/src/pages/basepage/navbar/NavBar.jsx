@@ -16,6 +16,7 @@ const NAV_PAGES = {
     { to: "/member/member-dashboard", label: "Dashboard" },
     { to: "/member/dues-status", label: "Dues" },
     { to: "/member/events", label: "Events" },
+    { to: "/member/my-rsvps", label: "My RSVPs" },
   ],
   treasurer: [
     { to: "/treasurer/treasurer-dashboard", label: "Dashboard" },
