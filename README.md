@@ -9,9 +9,7 @@ ClubSync replaces the manual Google Forms + spreadsheet workflow that student cl
 
 ## Class
 
-<!-- TODO: replace with your course link (e.g. the course page / syllabus URL) -->
-
-CS 4530 / Web Development — Northeastern University · [Class Link](https://TODO)
+CS 5610 / Web Development — Northeastern University · [Class Link](https://johnguerra.co/classes/webDevelopment_online_summer_2026/)
 
 ## Project Objective
 
@@ -23,9 +21,29 @@ Clubs waste time every semester copying names into spreadsheets and cross-checki
 
 Access is hierarchical: `member < treasurer < admin`.
 
-## Screenshot
+## Screenshots
 
-<!-- TODO: add a screenshot, e.g. ![ClubSync dashboard](docs/screenshot.png) -->
+**Home**
+
+![ClubSync home page](docs/screenshots/HomePageView.png)
+
+**Admin — Event Management** (create events, view/manage RSVPs)
+
+![Admin event management dashboard](docs/screenshots/MainAdminView.png)
+
+**Admin / Treasurer view**
+
+![Treasurer dashboard](docs/screenshots/AdminTreasurerView1.png)
+
+**Member — My RSVPs**
+
+![Events a member has RSVP'd to](docs/screenshots/MyRSVPsView.png)
+
+**Dues — overview, submission, and status**
+
+![Dues overview from member side](docs/screenshots/DuesView.png)
+![Dues view admin side](docs/screenshots/DuesSubmission.png)
+![Member dues status admin](docs/screenshots/DuesStatus.png)
 
 ## Tech Stack
 
