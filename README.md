@@ -29,11 +29,16 @@ Access is hierarchical: `member < treasurer < admin`.
 
 ## Tech Stack
 
-- **Backend:** Node.js, Express, MongoDB (native driver), Passport (local strategy), express-session + connect-mongo
-- **Frontend:** React (Vite), React Router, React-Bootstrap, PropTypes
-- **Tooling:** ESLint, Prettier
+- **Runtime / Server:** Node.js + Express (ES modules)
+- **Database:** MongoDB (native MongoDB Node.js driver — no Mongoose)
+- **Authentication / Sessions:** Passport (local strategy) with bcrypt password hashing; express-session backed by connect-mongo (sessions stored in MongoDB)
+- **Frontend:** React 19 with client-side rendering, built with Vite; React Router for routing; PropTypes for prop validation
+- **HTTP:** the browser's native `fetch` (no Axios); no CORS (frontend is served by the same Express server, proxied in dev)
+- **Styling:** Bootstrap 5.3 + React-Bootstrap components, plus per-component CSS files
+- **Tooling:** ESLint + Prettier; nodemon for dev auto-restart; dotenv for environment config
+- **Synthetic data:** a custom Node.js seed script (`npm run seed`) that generates ~1,300 internally-consistent records directly via the MongoDB driver (no external generator)
 
-_No Mongoose, Axios, or CORS — the project uses the native MongoDB driver and `fetch`._
+_Deliberately avoids the prohibited libraries: no Mongoose, no Axios, no CORS._
 
 ## Getting Started
 
