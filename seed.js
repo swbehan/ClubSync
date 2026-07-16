@@ -192,11 +192,57 @@ async function seed() {
 
   // members get a realistic spread of dues states
   const memberSubmissions = [];
+
+  // Fixed demo members referenced in the README. Pinned so the documented
+  // logins keep working after every reseed (unlike the random members below).
+  const demoMembers = [
+    {
+      email: "finley.nguyen4@clubsync.test",
+      firstName: "Finley",
+      lastName: "Nguyen",
+      duesStatus: "approved",
+      duesTier: "gold",
+    },
+    {
+      email: "parker.lee0@clubsync.test",
+      firstName: "Parker",
+      lastName: "Lee",
+      duesStatus: "approved",
+      duesTier: "silver",
+    },
+    {
+      email: "casey.brown1@clubsync.test",
+      firstName: "Casey",
+      lastName: "Brown",
+      duesStatus: "not_submitted",
+      duesTier: "null",
+    },
+  ];
+  for (const d of demoMembers) {
+    const memberId = new ObjectId();
+    userDocs.push(baseUser(memberId, "member", d));
+    if (d.duesStatus !== "not_submitted") {
+      memberSubmissions.push({
+        userId: memberId,
+        groupId: activeGroupId,
+        tier: d.duesTier,
+        paymentReference: `VENMO-${randInt(10000, 99999)}`,
+        status: d.duesStatus,
+        reviewNote: null,
+        reviewedBy: treasurerId,
+        submittedAt: dateWithinDays(30),
+        reviewedAt: new Date(),
+        seed: true,
+      });
+    }
+  }
   for (let i = 0; i < NUM_MEMBERS; i++) {
     const memberId = new ObjectId();
     const firstName = pick(FIRST_NAMES);
     const lastName = pick(LAST_NAMES);
-    const email = `${firstName}.${lastName}${i}@clubsync.test`.toLowerCase();
+    // +100 so random members never collide with the pinned demo emails above
+    const email =
+      `${firstName}.${lastName}${i + 100}@clubsync.test`.toLowerCase();
 
     // roll a dues state: 45% approved, 20% pending, 10% denied, 25% not submitted
     const roll = Math.random();

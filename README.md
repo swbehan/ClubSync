@@ -89,13 +89,15 @@ This populates all four collections with ~1,300 consistent synthetic records (on
 
 After running `npm run seed`, log in with any seeded account. **All seeded accounts use the password `password123`.**
 
-| Role      | Email                                                                      | Password      |
-| --------- | -------------------------------------------------------------------------- | ------------- |
-| Admin     | `seed.admin@clubsync.test`                                                 | `password123` |
-| Treasurer | `seed.treasurer@clubsync.test`                                             | `password123` |
-| Member    | `alex.smith0@clubsync.test` (or any `firstname.lastname{n}@clubsync.test`) | `password123` |
+| Role                     | Email                          | Password      |
+| ------------------------ | ------------------------------ | ------------- |
+| Admin                    | `seed.admin@clubsync.test`     | `password123` |
+| Treasurer                | `seed.treasurer@clubsync.test` | `password123` |
+| Member — approved gold   | `finley.nguyen4@clubsync.test` | `password123` |
+| Member — approved silver | `parker.lee0@clubsync.test`    | `password123` |
+| Member — no dues yet      | `casey.brown1@clubsync.test`   | `password123` |
 
-New members can also register at `/register` and join the active group with its join code.
+The three member accounts have different dues states, which is handy for demonstrating event RSVP eligibility (a gold-tier event accepts the gold member, blocks the silver and no-dues members). New members can also register at `/register` and join the active group with its join code.
 
 ## Available Scripts
 
@@ -114,6 +116,27 @@ New members can also register at `/register` and join the active group with its 
 | `npm run dev`   | Start the Vite dev server   |
 | `npm run build` | Build the production bundle |
 | `npm run lint`  | Lint the frontend           |
+
+## AI Use Disclosure
+
+-Julian
+
+I used an AI assistant (Claude Code, by Anthropic) during development, primarily as a **mentor/tutor rather than a code generator**.
+
+**Initial prompt.** I set up the collaboration explicitly at the start:
+
+> Act as my professor and someone who has 15 years of experince as a full-stack developer help me with the concepts of the project. I will be writting all of the code unless I specificly ask you to which will only be for boilerplate.
+
+I also gave it the project proposal so that the agent understood the role I was given and the ideas I had to work on.
+
+**How I used it:**
+
+- **I wrote most of the code myself.** For each feature the assistant explained the approach and structure, I implemented it, and then it reviewed my drafts — catching bugs (missing `await`, field-name mismatches, scope/bracket errors, template-literal vs. single-quote mistakes) and explaining the concepts behind them (React hooks, controlled inputs, `useEffect`, Express routing/middleware, MongoDB queries, HTTP status codes).
+- **I asked it to write some boilerplate/tooling for me** — the database seed script, a few component templates and the CSS styling, and this README — all of which I reviewed before keeping.
+- **Testing/tooling:** it ran linting, formatting, and end-to-end tests, and helped debug by exercising the API directly.
+- **Design decisions** (role hierarchy, event/dues eligibility rules, keeping seeded data consistent) were talked through and decided by mex.
+
+I reviewed and understood the final code and architectural choices for my portion.
 
 ## License
 
