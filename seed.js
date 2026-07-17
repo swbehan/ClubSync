@@ -1,8 +1,9 @@
 // ---------------------------------------------------------------------------
 // ClubSync seed script — generates 1k+ synthetic records across all four
-// collections (users, groups, events, dues_submissions) with data that stays
-// internally consistent: a member's dues status matches a real submission, and
-// event RSVP lists only contain members actually eligible for that event.
+// collections (users, groups, events, dues_submissions). The app is multi-club:
+// each group is an independent club with its own admin, treasurer, members,
+// events, and dues. Data stays internally consistent: a member's dues status
+// matches a real submission, and event RSVP lists only contain eligible members.
 //
 // Run with:  node seed.js         (or `npm run seed`)
 //
@@ -16,8 +17,15 @@ import { connect, CLIENT } from "./db/config.js";
 const { ObjectId } = mongodb;
 
 // ---- knobs you can tweak ----
-const NUM_MEMBERS = 700;
-const NUM_EVENTS = 40;
+const MEMBERS_PER_CLUB = 230;
+const EVENTS_PER_CLUB = 14;
+
+// fixed club identities so demo join codes stay stable across reseeds
+const CLUBS = [
+  { name: "Chess Club - Fall 2026", joinCode: "482913" },
+  { name: "Robotics Club - Fall 2026", joinCode: "550183" },
+  { name: "Hiking Club - Fall 2026", joinCode: "738421" },
+];
 
 const users = connect("users");
 const groups = connect("groups");
@@ -98,6 +106,18 @@ const LOCATIONS = [
 const TYPES = ["practice", "social", "meeting"];
 const TIER_RANK = { none: 0, silver: 1, gold: 2 };
 
+// rolls a realistic dues state: 45% approved, 20% pending, 10% denied, 25% none
+const rollDues = () => {
+  const roll = Math.random();
+  if (roll < 0.45)
+    return { duesStatus: "approved", duesTier: pick(["silver", "gold"]) };
+  if (roll < 0.65)
+    return { duesStatus: "pending", duesTier: pick(["silver", "gold"]) };
+  if (roll < 0.75)
+    return { duesStatus: "denied", duesTier: pick(["silver", "gold"]) };
+  return { duesStatus: "not_submitted", duesTier: "null" };
+};
+
 async function seed() {
   console.log("Clearing previous seed data (seed:true only)…");
   await Promise.all([
@@ -107,245 +127,184 @@ async function seed() {
     submissions.deleteMany({ seed: true }),
   ]);
 
-  // Pre-generate ids so we can cross-reference before inserting (groups need a
-  // creator user id; users need a group id — resolve the cycle up front).
-  const activeGroupId = new ObjectId();
-  const adminId = new ObjectId();
-  const treasurerId = new ObjectId();
-
-  // one shared password hash for every seeded account (fast; login = "password123")
+  // one shared password hash for every seeded account (login = "password123")
   const passwordHash = await bcrypt.hash("password123", 10);
 
-  // ---- GROUPS: one active "Fall 2026" + three retired semesters ----
-  console.log("Seeding groups…");
-  // make sure no other group is left active, so findActiveGroup returns ours
-  await groups.updateMany({}, { $set: { active: false } });
-  const groupDocs = [
-    {
-      _id: activeGroupId,
-      name: "Fall 2026",
-      joinCode: "482913",
-      createdBy: treasurerId,
-      active: true,
-      createdAt: new Date(),
-      seed: true,
-    },
-    {
-      name: "Spring 2026",
-      joinCode: "119274",
-      createdBy: treasurerId,
-      active: false,
-      createdAt: new Date("2026-01-10"),
-      seed: true,
-    },
-    {
-      name: "Fall 2025",
-      joinCode: "550183",
-      createdBy: treasurerId,
-      active: false,
-      createdAt: new Date("2025-09-02"),
-      seed: true,
-    },
-    {
-      name: "Spring 2025",
-      joinCode: "738421",
-      createdBy: treasurerId,
-      active: false,
-      createdAt: new Date("2025-01-14"),
-      seed: true,
-    },
-  ];
-  await groups.insertMany(groupDocs);
+  const groupDocs = [];
+  const userDocs = [];
+  const submissionDocs = [];
+  const eventDocs = [];
 
-  // ---- USERS: 1 admin, 1 treasurer, NUM_MEMBERS members ----
-  console.log(`Seeding ${NUM_MEMBERS + 2} users…`);
-  const baseUser = (id, role, extra) => ({
+  const baseUser = (id, role, groupId, extra) => ({
     _id: id,
     email: extra.email,
     passwordHash,
     firstName: extra.firstName,
     lastName: extra.lastName,
     role,
-    groupId: activeGroupId, // everyone belongs to the active semester
+    groupId,
     duesStatus: extra.duesStatus ?? "not_submitted",
     duesTier: extra.duesTier ?? "null",
     createdAt: new Date(),
     seed: true,
   });
 
-  const userDocs = [
-    baseUser(adminId, "admin", {
-      email: "seed.admin@clubsync.test",
-      firstName: "Ada",
-      lastName: "Admin",
-      duesStatus: "approved",
-      duesTier: "gold",
-    }),
-    baseUser(treasurerId, "treasurer", {
-      email: "seed.treasurer@clubsync.test",
-      firstName: "Tara",
-      lastName: "Treasurer",
-      duesStatus: "approved",
-      duesTier: "gold",
-    }),
-  ];
+  CLUBS.forEach((club, clubIndex) => {
+    const groupId = new ObjectId();
+    const adminId = new ObjectId();
+    const treasurerId = new ObjectId();
+    const isDemoClub = clubIndex === 0;
 
-  // members get a realistic spread of dues states
-  const memberSubmissions = [];
-
-  // Fixed demo members referenced in the README. Pinned so the documented
-  // logins keep working after every reseed (unlike the random members below).
-  const demoMembers = [
-    {
-      email: "finley.nguyen4@clubsync.test",
-      firstName: "Finley",
-      lastName: "Nguyen",
-      duesStatus: "approved",
-      duesTier: "gold",
-    },
-    {
-      email: "parker.lee0@clubsync.test",
-      firstName: "Parker",
-      lastName: "Lee",
-      duesStatus: "approved",
-      duesTier: "silver",
-    },
-    {
-      email: "casey.brown1@clubsync.test",
-      firstName: "Casey",
-      lastName: "Brown",
-      duesStatus: "not_submitted",
-      duesTier: "null",
-    },
-  ];
-  for (const d of demoMembers) {
-    const memberId = new ObjectId();
-    userDocs.push(baseUser(memberId, "member", d));
-    if (d.duesStatus !== "not_submitted") {
-      memberSubmissions.push({
-        userId: memberId,
-        groupId: activeGroupId,
-        tier: d.duesTier,
-        paymentReference: `VENMO-${randInt(10000, 99999)}`,
-        status: d.duesStatus,
-        reviewNote: null,
-        reviewedBy: treasurerId,
-        submittedAt: dateWithinDays(30),
-        reviewedAt: new Date(),
-        seed: true,
-      });
-    }
-  }
-  for (let i = 0; i < NUM_MEMBERS; i++) {
-    const memberId = new ObjectId();
-    const firstName = pick(FIRST_NAMES);
-    const lastName = pick(LAST_NAMES);
-    // +100 so random members never collide with the pinned demo emails above
-    const email =
-      `${firstName}.${lastName}${i + 100}@clubsync.test`.toLowerCase();
-
-    // roll a dues state: 45% approved, 20% pending, 10% denied, 25% not submitted
-    const roll = Math.random();
-    let duesStatus, duesTier;
-    if (roll < 0.45) {
-      duesStatus = "approved";
-      duesTier = pick(["silver", "gold"]);
-    } else if (roll < 0.65) {
-      duesStatus = "pending";
-      duesTier = pick(["silver", "gold"]);
-    } else if (roll < 0.75) {
-      duesStatus = "denied";
-      duesTier = pick(["silver", "gold"]);
-    } else {
-      duesStatus = "not_submitted";
-      duesTier = "null";
-    }
-
-    userDocs.push(
-      baseUser(memberId, "member", {
-        email,
-        firstName,
-        lastName,
-        duesStatus,
-        duesTier,
-      })
-    );
-
-    // anyone who submitted (not "not_submitted") gets a matching submission record
-    if (duesStatus !== "not_submitted") {
-      const reviewed = duesStatus !== "pending";
-      memberSubmissions.push({
-        userId: memberId,
-        groupId: activeGroupId,
-        tier: duesTier,
-        paymentReference: `VENMO-${randInt(10000, 99999)}`,
-        status: duesStatus,
-        reviewNote:
-          duesStatus === "denied" ? "Payment reference did not match." : null,
-        reviewedBy: reviewed ? treasurerId : null,
-        submittedAt: dateWithinDays(30),
-        reviewedAt: reviewed ? new Date() : null,
-        seed: true,
-      });
-    }
-  }
-  await users.insertMany(userDocs);
-
-  // ---- DUES SUBMISSIONS ----
-  console.log(`Seeding ${memberSubmissions.length} dues submissions…`);
-  await submissions.insertMany(memberSubmissions);
-
-  // members only (exclude admin/treasurer) for RSVP pools
-  const members = userDocs.filter((u) => u.role === "member");
-
-  // ---- EVENTS + consistent RSVPs ----
-  console.log(`Seeding ${NUM_EVENTS} events…`);
-  const eventDocs = [];
-  for (let i = 0; i < NUM_EVENTS; i++) {
-    const requiredTier = pick(["none", "none", "silver", "gold"]); // weight toward open
-    // eligibility mirrors the backend: "none" open to all; tiered needs approved + rank
-    const eligible = members.filter((m) => {
-      if (requiredTier === "none") return true;
-      if (m.duesStatus !== "approved") return false;
-      return (TIER_RANK[m.duesTier] ?? 0) >= TIER_RANK[requiredTier];
-    });
-    // random subset of eligible members RSVP
-    const shuffled = [...eligible].sort(() => Math.random() - 0.5);
-    const rsvps = shuffled
-      .slice(0, randInt(0, Math.min(40, eligible.length)))
-      .map((m) => m._id);
-
-    eventDocs.push({
-      groupId: activeGroupId,
-      name: `${pick(EVENT_NAMES)} #${i + 1}`,
-      type: pick(TYPES),
-      date: dateWithinDays(60),
-      location: pick(LOCATIONS),
-      requiredTier,
+    groupDocs.push({
+      _id: groupId,
+      name: club.name,
+      joinCode: club.joinCode,
       createdBy: adminId,
-      rsvps,
+      active: true,
       createdAt: new Date(),
       seed: true,
     });
-  }
+
+    // each club is run by one admin + one treasurer
+    userDocs.push(
+      baseUser(adminId, "admin", groupId, {
+        email: isDemoClub
+          ? "seed.admin@clubsync.test"
+          : `admin${clubIndex}@clubsync.test`,
+        firstName: "Ada",
+        lastName: `Admin${clubIndex}`,
+      })
+    );
+    userDocs.push(
+      baseUser(treasurerId, "treasurer", groupId, {
+        email: isDemoClub
+          ? "seed.treasurer@clubsync.test"
+          : `treasurer${clubIndex}@clubsync.test`,
+        firstName: "Tara",
+        lastName: `Treasurer${clubIndex}`,
+      })
+    );
+
+    // members of this club, tracked locally for building event RSVP pools
+    const clubMembers = [];
+    const addMember = (extra) => {
+      const memberId = new ObjectId();
+      const doc = baseUser(memberId, "member", groupId, extra);
+      userDocs.push(doc);
+      clubMembers.push(doc);
+
+      // anyone who submitted (not "not_submitted") gets a matching submission
+      if (doc.duesStatus !== "not_submitted") {
+        const reviewed = doc.duesStatus !== "pending";
+        submissionDocs.push({
+          userId: memberId,
+          groupId,
+          tier: doc.duesTier,
+          paymentReference: `VENMO-${randInt(10000, 99999)}`,
+          status: doc.duesStatus,
+          reviewNote:
+            doc.duesStatus === "denied"
+              ? "Payment reference did not match."
+              : null,
+          reviewedBy: reviewed ? treasurerId : null,
+          submittedAt: dateWithinDays(30),
+          reviewedAt: reviewed ? new Date() : null,
+          seed: true,
+        });
+      }
+    };
+
+    // pinned demo members (demo club only) — referenced in the README so the
+    // documented logins keep working after every reseed
+    if (isDemoClub) {
+      addMember({
+        email: "finley.nguyen4@clubsync.test",
+        firstName: "Finley",
+        lastName: "Nguyen",
+        duesStatus: "approved",
+        duesTier: "gold",
+      });
+      addMember({
+        email: "parker.lee0@clubsync.test",
+        firstName: "Parker",
+        lastName: "Lee",
+        duesStatus: "approved",
+        duesTier: "silver",
+      });
+      addMember({
+        email: "casey.brown1@clubsync.test",
+        firstName: "Casey",
+        lastName: "Brown",
+        duesStatus: "not_submitted",
+        duesTier: "null",
+      });
+    }
+
+    for (let i = 0; i < MEMBERS_PER_CLUB; i++) {
+      const firstName = pick(FIRST_NAMES);
+      const lastName = pick(LAST_NAMES);
+      // clubIndex + offset so emails never collide across clubs or with demos
+      const email =
+        `${firstName}.${lastName}${clubIndex}-${i + 100}@clubsync.test`.toLowerCase();
+      addMember({ email, firstName, lastName, ...rollDues() });
+    }
+
+    // events for this club, with RSVPs drawn only from eligible members
+    for (let i = 0; i < EVENTS_PER_CLUB; i++) {
+      const requiredTier = pick(["none", "none", "silver", "gold"]); // weight open
+      const eligible = clubMembers.filter((m) => {
+        if (requiredTier === "none") return true;
+        if (m.duesStatus !== "approved") return false;
+        return (TIER_RANK[m.duesTier] ?? 0) >= TIER_RANK[requiredTier];
+      });
+      const shuffled = [...eligible].sort(() => Math.random() - 0.5);
+      const rsvps = shuffled
+        .slice(0, randInt(0, Math.min(40, eligible.length)))
+        .map((m) => m._id);
+
+      eventDocs.push({
+        groupId,
+        name: `${pick(EVENT_NAMES)} #${i + 1}`,
+        type: pick(TYPES),
+        date: dateWithinDays(60),
+        location: pick(LOCATIONS),
+        requiredTier,
+        createdBy: adminId,
+        rsvps,
+        createdAt: new Date(),
+        seed: true,
+      });
+    }
+  });
+
+  console.log(`Seeding ${groupDocs.length} clubs…`);
+  await groups.insertMany(groupDocs);
+  console.log(`Seeding ${userDocs.length} users…`);
+  await users.insertMany(userDocs);
+  console.log(`Seeding ${submissionDocs.length} dues submissions…`);
+  await submissions.insertMany(submissionDocs);
+  console.log(`Seeding ${eventDocs.length} events…`);
   await events.insertMany(eventDocs);
 
   // ---- summary ----
   const total =
     groupDocs.length +
     userDocs.length +
-    memberSubmissions.length +
+    submissionDocs.length +
     eventDocs.length;
   console.log("\n=== Seed complete ===");
   console.log(`  groups:            ${groupDocs.length}`);
   console.log(`  users:             ${userDocs.length}`);
-  console.log(`  dues_submissions:  ${memberSubmissions.length}`);
+  console.log(`  dues_submissions:  ${submissionDocs.length}`);
   console.log(`  events:            ${eventDocs.length}`);
   console.log(
     `  TOTAL records:     ${total}  ${total >= 1000 ? "✅ (≥1000)" : "⚠️ under 1000"}`
   );
   console.log("\n  Log in as any seeded account with password: password123");
-  console.log("  e.g. seed.admin@clubsync.test / seed.treasurer@clubsync.test");
+  console.log(
+    "  Demo club: seed.admin@clubsync.test / seed.treasurer@clubsync.test"
+  );
+  console.log(`  Demo club join code: ${CLUBS[0].joinCode}`);
 }
 
 try {

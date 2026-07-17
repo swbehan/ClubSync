@@ -18,7 +18,13 @@ function UsersCollection({ collectionName = "users" } = {}) {
 
   // will reject duplicates with the same email, returns a clean
   // object (never the passwordHash) on success, or null if the email is already taken.
-  me.registerUser = async ({ email, password, firstName, lastName }) => {
+  me.registerUser = async ({
+    email,
+    password,
+    firstName,
+    lastName,
+    role = "member",
+  }) => {
     try {
       const existingUser = await me.findUserByEmail(email);
       if (existingUser) {
@@ -34,7 +40,7 @@ function UsersCollection({ collectionName = "users" } = {}) {
         duesStatus: DUES_STATUS.NOT_SUBMITTED,
         groupId: null,
         duesTier: "null",
-        role: "member",
+        role,
         createdAt: new Date(),
       };
       const result = await users.insertOne(newUserDoc);
@@ -71,34 +77,17 @@ function UsersCollection({ collectionName = "users" } = {}) {
     }
   };
 
-  // Rolls a group's roster into a new semester. Staff (treasurer/admin) carry
-  // over to the new group so they keep running the club, while members are
-  // detached and must join with the new code. Everyone's dues reset to
-  // not_submitted for the fresh term.
-  me.rolloverGroupMembers = async (previousGroupId, newGroupId) => {
+  // Resets a club's roster for a new semester in place. Members are detached and
+  // must re-join with the new code; staff (treasurer/admin) stay on to run the
+  // term. Everyone's dues reset to not_submitted.
+  me.resetGroupRoster = async (groupId) => {
     try {
-      const previousFilter = ObjectId.isValid(previousGroupId)
-        ? new ObjectId(previousGroupId)
-        : previousGroupId;
-      const nextGroupId = ObjectId.isValid(newGroupId)
-        ? new ObjectId(newGroupId)
-        : newGroupId;
+      const groupFilter = ObjectId.isValid(groupId)
+        ? new ObjectId(groupId)
+        : groupId;
 
-      // staff stay attached to run the new semester.
-      const staff = await users.updateMany(
-        { groupId: previousFilter, role: { $in: ["treasurer", "admin"] } },
-        {
-          $set: {
-            groupId: nextGroupId,
-            duesStatus: DUES_STATUS.NOT_SUBMITTED,
-            duesTier: "null",
-          },
-        }
-      );
-
-      // members drop off; they re-join the new semester with the new code.
       const members = await users.updateMany(
-        { groupId: previousFilter, role: "member" },
+        { groupId: groupFilter, role: "member" },
         {
           $set: {
             groupId: null,
@@ -108,12 +97,17 @@ function UsersCollection({ collectionName = "users" } = {}) {
         }
       );
 
+      const staff = await users.updateMany(
+        { groupId: groupFilter, role: { $in: ["treasurer", "admin"] } },
+        { $set: { duesStatus: DUES_STATUS.NOT_SUBMITTED, duesTier: "null" } }
+      );
+
       return {
-        staffCarried: staff.modifiedCount,
         membersDetached: members.modifiedCount,
+        staffReset: staff.modifiedCount,
       };
     } catch (error) {
-      console.error("Error rolling over group members", error);
+      console.error("Error resetting group roster", error);
       throw error;
     }
   };
@@ -230,6 +224,40 @@ function UsersCollection({ collectionName = "users" } = {}) {
       return updated;
     } catch (error) {
       console.error("Error setting dues status", error);
+      throw error;
+    }
+  };
+
+  // lists the members of a club so an admin can manage their roles.
+  me.findUsersByGroup = async (groupId) => {
+    try {
+      const groupFilter = ObjectId.isValid(groupId)
+        ? new ObjectId(groupId)
+        : groupId;
+      return await users
+        .find(
+          { groupId: groupFilter },
+          { projection: { firstName: 1, lastName: 1, email: 1, role: 1 } }
+        )
+        .toArray();
+    } catch (error) {
+      console.error("Error finding users by group", error);
+      throw error;
+    }
+  };
+
+  // sets a user's role (an admin appointing a treasurer/admin, or demoting).
+  me.setRole = async (userId, role) => {
+    try {
+      if (!ObjectId.isValid(userId)) return null;
+      const updated = await users.findOneAndUpdate(
+        { _id: new ObjectId(userId) },
+        { $set: { role } },
+        { returnDocument: "after" }
+      );
+      return updated;
+    } catch (error) {
+      console.error("Error setting user role", error);
       throw error;
     }
   };

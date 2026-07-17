@@ -102,15 +102,20 @@ export default function DuesStatus() {
         </Alert>
       )}
 
-      {!canSubmit ? (
+      {user?.groupId === null ? (
+        <Alert variant="warning" className="spacing-after-moto">
+          <Alert.Heading className="h6">
+            You must join a group on the dashboard before submitting dues
+          </Alert.Heading>
+          <p className="mb-0">{latest?.reviewNote}</p>
+        </Alert>
+      ) : !canSubmit ? (
         <div className="spacing-after-moto">
           <p>
             Your dues are already{" "}
             <strong>{(user?.duesStatus || "").replace("_", " ")}</strong>. There
             is nothing to submit right now.
           </p>
-
-          {/* a pending submission can still be withdrawn if it was a mistake. */}
           {user?.duesStatus === "pending" && (
             <>
               <Button
@@ -133,7 +138,6 @@ export default function DuesStatus() {
               <option value="silver">Silver</option>
             </Form.Select>
           </Form.Group>
-
           <Form.Group className="mb-3">
             <Form.Label>Payment reference</Form.Label>
             <Form.Control
@@ -146,9 +150,7 @@ export default function DuesStatus() {
               Helps your treasurer match your payment when verifying.
             </Form.Text>
           </Form.Group>
-
           {error && <div className="text-danger mb-3">{error}</div>}
-
           <Button variant="primary" type="submit">
             Submit Dues
           </Button>

@@ -4,7 +4,7 @@ import { useUser } from "../../../../context/UserContext.jsx";
 import JoinGroupCard from "./JoinGroupCard.jsx";
 
 // Member dashboard widget for joining the club by entering the active semester's
-// join code. 
+// join code.
 export default function JoinGroupWidget() {
   const { user, setUser } = useUser();
 

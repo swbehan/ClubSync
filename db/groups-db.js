@@ -15,10 +15,10 @@ function GroupsCollection({ collectionName = "groups" } = {}) {
     return existing ? generateJoinCode() : code;
   };
 
-  // Creates a group
+  // Creates a group. Each club is independent, so creating one does not touch
+  // any other club.
   me.createGroup = async ({ name, createdBy }) => {
     try {
-      await groups.updateMany({ active: true }, { $set: { active: false } });
       const generatedJoinClubId = await generateJoinCode();
       const newClubDoc = {
         name,
@@ -47,12 +47,16 @@ function GroupsCollection({ collectionName = "groups" } = {}) {
     }
   };
 
-  // Trys and find an active group
-  me.findActiveGroup = async () => {
+  // Issues a fresh join code for a club (used when starting a new semester).
+  // Returns the new code.
+  me.regenerateJoinCode = async (id) => {
     try {
-      return await groups.findOne({ active: true });
+      if (!ObjectId.isValid(id)) return null;
+      const joinCode = await generateJoinCode();
+      await groups.updateOne({ _id: new ObjectId(id) }, { $set: { joinCode } });
+      return joinCode;
     } catch (error) {
-      console.error("Error finding active groups", error);
+      console.error("Error regenerating join code", error);
       throw error;
     }
   };

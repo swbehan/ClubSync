@@ -1,10 +1,11 @@
 import { Col } from "react-bootstrap";
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { useUser } from "../../../../context/UserContext.jsx";
 import SemesterCard from "./SemesterCard.jsx";
 import NewSemesterModal from "./NewSemesterModal.jsx";
 
-export default function NewSemesterWidget() {
+export default function NewSemesterWidget({ onSemesterStarted }) {
   const { user, setUser } = useUser();
 
   const [active, setActive] = useState(null);
@@ -14,19 +15,20 @@ export default function NewSemesterWidget() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const loadActive = async () => {
+    if (!user?.groupId) return;
+    const loadClub = async () => {
       try {
-        const res = await fetch("/api/groups/active", {
+        const res = await fetch(`/api/groups/${user.groupId}`, {
           credentials: "include",
         });
         if (!res.ok) return;
         setActive(await res.json());
       } catch (err) {
-        console.error("Failed to load active semester", err);
+        console.error("Failed to load your club", err);
       }
     };
-    loadActive();
-  }, []);
+    loadClub();
+  }, [user?.groupId]);
 
   const openConfirm = () => {
     setName("");
@@ -39,8 +41,8 @@ export default function NewSemesterWidget() {
     setShowConfirm(false);
   };
 
-  // creates the new semester and, since staff carry over, moves the acting
-  // treasurer onto the new group in context so the dashboard stays live.
+  // resets the club in place: the club keeps its id, so staff stay attached and
+  // only the join code, name, and dues reset.
   const startSemester = async () => {
     const semesterName = name.trim();
     if (!semesterName) {
@@ -61,15 +63,17 @@ export default function NewSemesterWidget() {
         setError(data.message ?? "Could not start a new semester.");
         return;
       }
-      const data = await res.json(); // { id, name, joinCode }
-      setActive({ name: data.name, joinCode: data.joinCode });
-      setUser({
-        ...user,
-        groupId: data.id,
-        duesStatus: "not_submitted",
-        duesTier: "null",
-      });
+      const data = await res.json(); // { name, joinCode }
+      setActive((prev) => ({
+        ...prev,
+        name: data.name,
+        joinCode: data.joinCode,
+      }));
+      setUser({ ...user, duesStatus: "not_submitted", duesTier: "null" });
       setShowConfirm(false);
+      // tell the dashboard to refetch its stats + pending list (same club id,
+      // so their own effects wouldn't otherwise re-run).
+      if (onSemesterStarted) onSemesterStarted();
     } catch (err) {
       console.error("Failed to start new semester", err);
       setError("Something went wrong. Please try again.");
@@ -77,6 +81,8 @@ export default function NewSemesterWidget() {
       setSubmitting(false);
     }
   };
+
+  if (!user?.groupId) return null;
 
   return (
     <Col xs={12} md={12} lg={12} className="role-card dues-stat-widget">
@@ -93,3 +99,7 @@ export default function NewSemesterWidget() {
     </Col>
   );
 }
+
+NewSemesterWidget.propTypes = {
+  onSemesterStarted: PropTypes.func,
+};
