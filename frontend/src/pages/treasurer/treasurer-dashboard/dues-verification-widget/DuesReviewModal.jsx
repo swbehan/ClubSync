@@ -12,8 +12,6 @@ function DetailRow({ label, children, className = "mb-1" }) {
   );
 }
 
-// review modal: shows one submission's details and lets the treasurer
-// approve it (no note) or deny it (reason required)
 export default function DuesReviewModal({
   submission,
   show,

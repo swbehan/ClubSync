@@ -35,11 +35,12 @@ function checkEligibility(user, event) {
 
 eventRouter.get("/", isAuthenticated, async (req, res) => {
   try {
-    const activeGroup = await groupsCollection.findActiveGroup();
-    if (!activeGroup) {
+    // events are scoped to the user's own club — someone who hasn't joined a
+    // group sees nothing, and never sees another club's events.
+    if (!req.user.groupId) {
       return res.json([]);
     }
-    const events = await eventsCollection.getEventsByGroup(activeGroup._id);
+    const events = await eventsCollection.getEventsByGroup(req.user.groupId);
     res.json(events);
   } catch (error) {
     console.error("Error fetching events", error);
@@ -82,13 +83,12 @@ eventRouter.post("/", requireRole("admin"), async (req, res) => {
 // MUST stay above "/:id" or Express treats "mine" as an event id.
 eventRouter.get("/mine", isAuthenticated, async (req, res) => {
   try {
-    const activeGroup = await groupsCollection.findActiveGroup();
-    if (!activeGroup) {
+    if (!req.user.groupId) {
       return res.json([]);
     }
     const events = await eventsCollection.getEventsForUser(
       req.user._id,
-      activeGroup._id
+      req.user.groupId
     );
     res.json(events);
   } catch (error) {
@@ -101,6 +101,14 @@ eventRouter.get("/:id", isAuthenticated, async (req, res) => {
   try {
     const event = await eventsCollection.findEventById(req.params.id);
     if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    // only members of the event's own club may view it. 404 (not 403) so we
+    // don't reveal that an event with this id exists in another group.
+    if (
+      !req.user.groupId ||
+      String(event.groupId) !== String(req.user.groupId)
+    ) {
       return res.status(404).json({ message: "Event not found" });
     }
     res.json(event);
@@ -147,6 +155,13 @@ eventRouter.post("/:id/rsvp", isAuthenticated, async (req, res) => {
   try {
     const event = await eventsCollection.findEventById(req.params.id);
     if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    // can't RSVP to an event outside your own club.
+    if (
+      !req.user.groupId ||
+      String(event.groupId) !== String(req.user.groupId)
+    ) {
       return res.status(404).json({ message: "Event not found" });
     }
 

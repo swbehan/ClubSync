@@ -2,8 +2,6 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import PropTypes from "prop-types";
 
-// The semester overview card: current semester name, the active join code, and
-// the button that opens the start-new-semester confirmation.
 export default function SemesterCard({ active, onStart }) {
   return (
     <Card className="h-100 dues-card d-flex flex-column justify-content-between">

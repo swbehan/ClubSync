@@ -4,8 +4,7 @@ import { useUser } from "../../../../context/UserContext.jsx";
 import GroupCard from "./GroupCard.jsx";
 
 // Member dashboard widget that shows the club/semester the member currently
-// belongs to. Reads the member's groupId from context and loads the group; the
-// card is a presentational child.
+// belongs to.
 export default function GroupWidget() {
   const { user } = useUser();
   const [group, setGroup] = useState(null);

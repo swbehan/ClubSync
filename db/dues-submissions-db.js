@@ -47,10 +47,8 @@ function DuesSubmissionsCollection({
     }
   };
 
-  // Fetches "pending" Silver/Gold submissions for a group, sorted oldest-first.
+  // Fetches pending silver or gold submissions for a group and displays the oldest first.
   // A limit > 0 caps the subset (e.g., 5 for widgets); limit <= 0 returns all.
-  // Returns { total, items } so widgets can display a full pending count badge.
-  // Member names are attached downstream via a batched lookup route.
   me.getPending = async (groupId, limit = 0) => {
     try {
       const groupFilter = ObjectId.isValid(groupId)
@@ -76,9 +74,8 @@ function DuesSubmissionsCollection({
     }
   };
 
-  // Fetches a member's most recent submission (newest first), or null if they
-  // have never submitted. Lets a member see the outcome of their last attempt,
-  // e.g. the treasurer's reviewNote after a denial.
+  // fetches a member's most recent submission (newest first) or null if they
+  // have never submitted
   me.getLatestForUser = async (userId) => {
     try {
       if (!ObjectId.isValid(userId)) return null;
@@ -94,7 +91,7 @@ function DuesSubmissionsCollection({
     }
   };
 
-  // Transitions a pending submission to approved/denied and stamps who
+  // transitions a pending submission to approved/denied and stamps who
   // reviewed it and when.
   me.reviewSubmission = async (
     submissionId,
@@ -123,9 +120,8 @@ function DuesSubmissionsCollection({
     }
   };
 
-  // Withdraws a member's own submission. Scoped to userId (so one member can't
-  // delete another's) and to PENDING (an already-reviewed submission can't be
-  // yanked). Returns the deleted doc, or null if nothing matched.
+  // withdraws a member's own submission and is scoped to the userId so one member can't
+  // delete anothers. This action is only available for members who have their dues status as pending
   me.deleteSubmission = async (submissionId, userId) => {
     try {
       if (!ObjectId.isValid(submissionId) || !ObjectId.isValid(userId)) {
@@ -143,8 +139,8 @@ function DuesSubmissionsCollection({
     }
   };
 
-  // Closes out a group's still-pending submissions when a new semester starts.
-  // Old-term rows are kept (soft archive) but flipped out of the pending queue.
+  // closes out a group's still pending submissions when a new semester starts.
+  // oldterm rows are kept (soft archive) but flipped out of the pending queue.
   me.archivePendingForGroup = async (groupId) => {
     try {
       const groupFilter = ObjectId.isValid(groupId)

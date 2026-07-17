@@ -4,11 +4,6 @@ import { useUser } from "../../../../context/UserContext.jsx";
 import SemesterCard from "./SemesterCard.jsx";
 import NewSemesterModal from "./NewSemesterModal.jsx";
 
-// Treasurer-only dashboard widget: shows the current semester and its join code,
-// and lets the treasurer start a brand-new semester. Starting a semester issues
-// a fresh join code and clears the roster — staff carry over, members are
-// detached and must re-join. All state lives here; the card and confirm modal
-// are presentational children.
 export default function NewSemesterWidget() {
   const { user, setUser } = useUser();
 

@@ -16,8 +16,6 @@ export default function MemberDashboard() {
       </p>
 
       <Row className="justify-content-center gy-4">
-        {/* a member must be on a semester's roster before anything else, so we
-            gate the group + dues overview behind joining the active group. */}
         {user?.groupId ? (
           <>
             <DuesWidget user={user} />

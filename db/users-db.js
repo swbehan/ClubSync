@@ -46,9 +46,8 @@ function UsersCollection({ collectionName = "users" } = {}) {
     }
   };
 
-  // Atomically sets user duesState to pending for the chosen tier.
-  // Acts as a guard: returns null if the user is already pending/approved.
-  // The dues_submissions collection remains the main source of truth.
+  // atomically sets user duesState to pending for the chosen tier.
+  // acts as a guard: returns null if the user is already pending/approved.
   me.submitDues = async (userId, duesTier) => {
     try {
       if (!ObjectId.isValid(userId)) return null;
@@ -74,7 +73,7 @@ function UsersCollection({ collectionName = "users" } = {}) {
 
   // Rolls a group's roster into a new semester. Staff (treasurer/admin) carry
   // over to the new group so they keep running the club, while members are
-  // detached and must re-join with the new code. Everyone's dues reset to
+  // detached and must join with the new code. Everyone's dues reset to
   // not_submitted for the fresh term.
   me.rolloverGroupMembers = async (previousGroupId, newGroupId) => {
     try {
@@ -169,8 +168,7 @@ function UsersCollection({ collectionName = "users" } = {}) {
     }
   };
 
-  // Returns the full user document (including passwordHash) or null.
-  // The hash is needed by passport to compare passwords, so we don't strip it here, we strip it before we send to the client
+  // returns the full user document (including passwordHash) or null.
   me.findUserByEmail = async (email) => {
     try {
       return await users.findOne({ email });
@@ -191,8 +189,8 @@ function UsersCollection({ collectionName = "users" } = {}) {
     }
   };
 
-  // Batched read: accepts user IDs and returns lean identity documents.
-  // Allows routes to populate user details on submissions/RSVPs in a single query.
+  // accepts user IDs and returns lean identity documents.
+  // allows routes to populate user details on submissions/RSVPs in a single query.
   me.findUsersByIds = async (ids = []) => {
     try {
       const objectIds = ids

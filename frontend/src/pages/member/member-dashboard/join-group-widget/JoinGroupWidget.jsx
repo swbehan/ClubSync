@@ -4,9 +4,7 @@ import { useUser } from "../../../../context/UserContext.jsx";
 import JoinGroupCard from "./JoinGroupCard.jsx";
 
 // Member dashboard widget for joining the club by entering the active semester's
-// join code. On success it attaches the member to the group and refreshes the
-// user context so the dashboard swaps over to their dues overview. All state
-// lives here; the card is a presentational child.
+// join code. 
 export default function JoinGroupWidget() {
   const { user, setUser } = useUser();
 
@@ -35,7 +33,7 @@ export default function JoinGroupWidget() {
         setError(data.message ?? "Could not join the club.");
         return;
       }
-      const data = await res.json(); // { groupId, groupName }
+      const data = await res.json();
       setUser({ ...user, groupId: data.groupId });
     } catch (err) {
       console.error("Failed to join club", err);

@@ -10,7 +10,6 @@ const TIER_RANK = { none: 0, silver: 1, gold: 2 };
 const formatDate = (value) =>
   value ? new Date(value).toLocaleDateString() : "—";
 
-// tier badge ("Open" when anyone may attend).
 const tierBadge = (tier) => {
   const value = tier ?? "none";
   return (
@@ -32,16 +31,14 @@ const COLUMNS = [
   },
 ];
 
-// Member dashboard widget listing the club's events. Rows are clickable and open
-// a modal with the event's details plus an RSVP action, gated by the member's
-// dues tier. previewLimit > 0 caps the list (e.g. 5 on the dashboard); <= 0
-// shows every event.
+// rows are clickable and open a modal with the event's details plus an RSVP action gated by the member's
+// dues tier. previewLimit > 0 caps the list and  <= 0 shows every event.
 export default function EligibleEventsWidget({ previewLimit = 0 }) {
   const { user } = useUser();
   const [events, setEvents] = useState([]);
   const [selected, setSelected] = useState(null);
 
-  // a member only "holds" a tier once their dues are approved at it; otherwise
+  // a member only holds a tier once their dues are approved at it; otherwise
   // they can only attend open (requiredTier: none) events.
   const memberRank =
     user?.duesStatus === "approved" ? (TIER_RANK[user.duesTier] ?? 0) : 0;
