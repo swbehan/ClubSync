@@ -1,6 +1,6 @@
 # ClubSync
 
-ClubSync replaces the manual Google Forms + spreadsheet workflow that student clubs use to track dues and manage event access. Treasurers run semester groups and review dues, admins create events with a required dues tier, and members can only RSVP to events they're eligible for based on their approved tier — eliminating the manual cross-referencing.
+ClubSync replaces the manual Google Forms + spreadsheet workflow that student clubs use to track dues and manage event access. Admins create and run their club, treasurers review dues, and members can only RSVP to events they're eligible for based on their approved dues tier — eliminating the manual cross-referencing.
 
 ## Authors
 
@@ -13,13 +13,15 @@ CS 5610 / Web Development — Northeastern University · [Class Link](https://jo
 
 ## Project Objective
 
-Clubs waste time every semester copying names into spreadsheets and cross-checking who has paid before letting members into events. ClubSync centralizes this into one app with three roles:
+Clubs waste time every semester copying names into spreadsheets and cross-checking who has paid before letting members into events. ClubSync centralizes this into one app. It is **multi-club**: each club is independent, with its own members, events, and dues, and users only ever see their own club's data.
 
-- **Treasurer** — creates a semester group with a join code, reviews dues submissions, and sees a running total of collected dues by tier.
-- **Admin** — creates events, sets the dues tier required to attend, and views the RSVP list for each event.
-- **Member** — joins a group, submits dues with a tier and payment reference, and RSVPs to events they're eligible for (with a clear message when they're not).
+Three roles:
 
-Access is hierarchical: `member < treasurer < admin`.
+- **Admin** — registers and creates the club (which generates a join code), creates events and sets the dues tier required to attend, views each event's RSVP list, and manages members (including promoting a member to treasurer).
+- **Treasurer** — reviews dues submissions, sees a running total of collected dues by tier, and can start a fresh semester (regenerates the join code and resets the roster). Treasurers are promoted by an admin.
+- **Member** — joins a club with its join code, submits dues with a tier and payment reference, and RSVPs to events they're eligible for (with a clear message when they're not).
+
+Access is hierarchical: `member < treasurer < admin`. To get started, an admin registers and names their club; everyone else registers as a member and joins with the club's join code.
 
 ## Screenshots
 
@@ -53,7 +55,7 @@ Access is hierarchical: `member < treasurer < admin`.
 - **Frontend:** React 19 with client-side rendering, built with Vite; React Router for routing; PropTypes for prop validation
 - **HTTP:** the browser's native `fetch` (no Axios); no CORS (frontend is served by the same Express server, proxied in dev)
 - **Styling:** Bootstrap 5.3 + React-Bootstrap components, plus per-component CSS files
-- **Tooling:** ESLint + Prettier; nodemon for dev auto-restart; dotenv for environment config
+- **Tooling:** ESLint + Prettier; dotenv for environment config
 - **Synthetic data:** a custom Node.js seed script (`npm run seed`) that generates ~1,300 internally-consistent records directly via the MongoDB driver (no external generator)
 
 _Deliberately avoids the prohibited libraries: no Mongoose, no Axios, no CORS._
@@ -106,7 +108,7 @@ Open **http://localhost:5173** — API requests are proxied to the backend on po
 npm run seed
 ```
 
-This populates all four collections with ~1,300 consistent synthetic records (one active semester, ~700 members with realistic dues states, 40 events with eligibility-consistent RSVPs). It is safe to re-run — it only clears its own seed data.
+This populates all four collections with ~1,300 consistent synthetic records across **three independent clubs** — each with an admin, a treasurer, ~230 members with realistic dues states, and ~14 events with eligibility-consistent RSVPs. It is safe to re-run — it only clears its own seed data.
 
 ## Login Credentials
 
@@ -120,17 +122,18 @@ After running `npm run seed`, log in with any seeded account. **All seeded accou
 | Member — approved silver | `parker.lee0@clubsync.test`    | `password123` |
 | Member — no dues yet     | `casey.brown1@clubsync.test`   | `password123` |
 
-The three member accounts have different dues states, which is handy for demonstrating event RSVP eligibility (a gold-tier event accepts the gold member, blocks the silver and no-dues members). New members can also register at `/register` and join the active group with its join code.
+All five demo accounts belong to the same club (**Chess Club — Fall 2026**, join code `482913`). The three member accounts have different dues states, which is handy for demonstrating event RSVP eligibility (a gold-tier event accepts the gold member and blocks the silver and no-dues members). You can also register a new **admin** to create your own club, or register a **member** and join a club with its join code.
 
 ## Available Scripts
 
 **Backend (project root):**
 
-| Command        | Description                                  |
-| -------------- | -------------------------------------------- |
-| `npm start`    | Start the Express server (nodemon)           |
-| `npm run seed` | Populate the database with synthetic records |
-| `npm run lint` | Lint the backend                             |
+| Command            | Description                                             |
+| ------------------ | ------------------------------------------------------- |
+| `npm start`        | Start the Express server                                |
+| `npm run seed`     | Populate the database with synthetic records            |
+| `npm run db:reset` | Wipe **every** collection for a clean slate (then seed) |
+| `npm run lint`     | Lint the backend                                        |
 
 **Frontend (`frontend/`):**
 
