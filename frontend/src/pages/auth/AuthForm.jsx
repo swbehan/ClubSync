@@ -50,11 +50,21 @@ export default function AuthForm({
         {fields.map((field) => (
           <Form.Group className="mb-3" key={field.name}>
             <Form.Label>{field.label}</Form.Label>
-            <Form.Control
-              type={field.type}
-              placeholder={field.placeholder}
-              name={field.name}
-            />
+            {field.type === "select" ? (
+              <Form.Select name={field.name} defaultValue={field.defaultValue}>
+                {field.options.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </Form.Select>
+            ) : (
+              <Form.Control
+                type={field.type}
+                placeholder={field.placeholder}
+                name={field.name}
+              />
+            )}
           </Form.Group>
         ))}
 

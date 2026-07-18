@@ -14,6 +14,7 @@ import authRouter from "./routes/auth.js";
 import duesRouter from "./routes/dues.js";
 import groupsRouter from "./routes/groups.js";
 import eventsRouter from "./routes/events.js";
+import usersRouter from "./routes/users.js";
 
 // ----------------------------
 // SERVER CONSTANTS
@@ -73,6 +74,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/dues", duesRouter);
 app.use("/api/groups", groupsRouter);
 app.use("/api/events", eventsRouter);
+app.use("/api/users", usersRouter);
 
 // ----------------------------
 // SPA CATCH-ALL ROUTING

@@ -17,7 +17,10 @@ const COLUMNS = [
   },
 ];
 
-export default function DuesVerificationWidget({ previewLimit = 0 }) {
+export default function DuesVerificationWidget({
+  previewLimit = 0,
+  refreshSignal = 0,
+}) {
   const [pending, setPending] = useState([]);
   const [total, setTotal] = useState(0);
   const [selected, setSelected] = useState(null);
@@ -51,7 +54,7 @@ export default function DuesVerificationWidget({ previewLimit = 0 }) {
       }
     };
     loadPending();
-  }, [user?.groupId, previewLimit, refreshKey]);
+  }, [user?.groupId, previewLimit, refreshKey, refreshSignal]);
 
   const openReview = (member) => {
     setSelected(member);
@@ -145,4 +148,5 @@ export default function DuesVerificationWidget({ previewLimit = 0 }) {
 
 DuesVerificationWidget.propTypes = {
   previewLimit: PropTypes.number,
+  refreshSignal: PropTypes.number,
 };

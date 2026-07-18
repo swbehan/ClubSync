@@ -1,6 +1,5 @@
 import { Router } from "express";
 import eventsCollection from "../db/events-db.js";
-import groupsCollection from "../db/groups-db.js"; // to find the active group
 import { isAuthenticated, requireRole } from "../middleware/auth.js";
 import usersCollection from "../db/users-db.js";
 
@@ -56,15 +55,15 @@ eventRouter.post("/", requireRole("admin"), async (req, res) => {
       return res.status(400).json({ message: "Name and date are required" });
     }
 
-    const activeGroup = await groupsCollection.findActiveGroup();
-    if (!activeGroup) {
+    // events attach to the admin's own club.
+    if (!req.user.groupId) {
       return res
         .status(400)
-        .json({ message: "No active group to attach the event to" });
+        .json({ message: "Create a club before adding events" });
     }
 
     const result = await eventsCollection.createEvent({
-      groupId: activeGroup._id,
+      groupId: req.user.groupId,
       name,
       type,
       date: new Date(date),

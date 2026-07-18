@@ -16,56 +16,33 @@ groupsRouter.get("/", requireRole("treasurer"), async (req, res) => {
   }
 });
 
-groupsRouter.post("/", requireRole("treasurer"), async (req, res) => {
-  try {
-    const { name } = req.body;
-    if (!name) {
-      return res.status(400).json({ message: "Group name is required " });
-    }
-    const result = await groupsCollection.createGroup({
-      name,
-      createdBy: req.user._id,
-    });
-    res.status(201).json(result);
-  } catch (error) {
-    console.error("Error creating groups", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-// Starts a fresh semester: creates a new active group (new join code), then
-// rolls the previous roster over — staff carry into the new group, members are
-// detached to re-join, and the old term's pending dues are archived. No history
-// is kept beyond the soft archive.
+// Starts a fresh semester for the treasurer's own club: renames it, regenerates
+// its join code, clears the roster (members detached, staff stay), and archives
+// the term's pending dues.
 groupsRouter.post("/semester", requireRole("treasurer"), async (req, res) => {
   try {
     const { name } = req.body;
     if (!name) {
       return res.status(400).json({ message: "A semester name is required" });
     }
-
-    // capture the outgoing semester before createGroup deactivates it.
-    const previous = await groupsCollection.findActiveGroup();
-
-    const result = await groupsCollection.createGroup({
-      name,
-      createdBy: req.user._id,
-    });
-
-    if (previous) {
-      await usersCollection.rolloverGroupMembers(previous._id, result.id);
-      await duesSubmissionsCollection.archivePendingForGroup(previous._id);
+    if (!req.user.groupId) {
+      return res.status(400).json({ message: "Create a club first" });
     }
 
-    res.status(201).json(result);
+    const groupId = req.user.groupId;
+    await groupsCollection.updateGroup(groupId, { name });
+    const joinCode = await groupsCollection.regenerateJoinCode(groupId);
+    await usersCollection.resetGroupRoster(groupId);
+    await duesSubmissionsCollection.archivePendingForGroup(groupId);
+
+    res.json({ name, joinCode });
   } catch (error) {
     console.error("Error starting new semester", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
-// Lets a member join the club by entering the active semester's join code. Only
-// the active group's code works, so old-semester codes can't re-attach anyone.
+// Lets a member join a club by entering its current join code.
 groupsRouter.post("/join", isAuthenticated, async (req, res) => {
   try {
     const { joinCode } = req.body;
@@ -86,19 +63,6 @@ groupsRouter.post("/join", isAuthenticated, async (req, res) => {
     res.json({ groupId: group._id, groupName: group.name });
   } catch (error) {
     console.error("Error joining group", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-groupsRouter.get("/active", isAuthenticated, async (req, res) => {
-  try {
-    const group = await groupsCollection.findActiveGroup();
-    if (!group) {
-      return res.status(404).json({ message: "No active group" });
-    }
-    res.json(group);
-  } catch (error) {
-    console.error("Error fetching active group", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

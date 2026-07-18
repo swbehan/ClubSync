@@ -118,7 +118,7 @@ After running `npm run seed`, log in with any seeded account. **All seeded accou
 | Treasurer                | `seed.treasurer@clubsync.test` | `password123` |
 | Member — approved gold   | `finley.nguyen4@clubsync.test` | `password123` |
 | Member — approved silver | `parker.lee0@clubsync.test`    | `password123` |
-| Member — no dues yet      | `casey.brown1@clubsync.test`   | `password123` |
+| Member — no dues yet     | `casey.brown1@clubsync.test`   | `password123` |
 
 The three member accounts have different dues states, which is handy for demonstrating event RSVP eligibility (a gold-tier event accepts the gold member, blocks the silver and no-dues members). New members can also register at `/register` and join the active group with its join code.
 

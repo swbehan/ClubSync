@@ -14,7 +14,6 @@ import AboutPage from "./pages/about/AboutPage.jsx";
 import LoginPage from "./pages/auth/login/LoginPage.jsx";
 import RegisterPage from "./pages/auth/register/RegisterPage.jsx";
 import MemberDashboard from "./pages/member/member-dashboard/MemberDashboard.jsx";
-import GroupForm from "./pages/treasurer/group-form/GroupForm.jsx";
 import TreasurerDashboard from "./pages/treasurer/treasurer-dashboard/TreasurerDashboard.jsx";
 import AdminDashboard from "./pages/admin/admindashboard/AdminDashboard.jsx";
 import EventList from "./pages/events/event-list/EventList.jsx";
@@ -24,6 +23,7 @@ import EventDetail from "./pages/events/event-detail/EventDetail.jsx";
 import ReviewDues from "./pages/treasurer/dues-verification/ReviewDues.jsx";
 import EventEditForm from "./pages/events/event-edit/EventEditForm.jsx";
 import MyRsvps from "./pages/events/my-rsvps/MyRsvps.jsx";
+import MembersPage from "./pages/admin/members/MembersPage.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -54,13 +54,13 @@ createRoot(document.getElementById("root")).render(
               path="/treasurer/treasurer-dashboard"
               element={<TreasurerDashboard />}
             />
-            <Route path="/treasurer/group-form" element={<GroupForm />} />
             <Route path="/treasurer/review-dues" element={<ReviewDues />} />
           </Route>
 
           {/* Admin Role Pages */}
           <Route element={<ProtectedRoute allow={["admin"]} />}>
             <Route path="/admin/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/members" element={<MembersPage />} />
             <Route path="/admin/event-form" element={<EventForm />} />
             <Route path="/admin/events/:id/edit" element={<EventEditForm />} />
           </Route>

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import usersCollection from "../db/users-db.js";
+import groupsCollection from "../db/groups-db.js";
 import { isAuthenticated } from "../middleware/auth.js";
 
 const authRouter = Router();
@@ -10,7 +11,7 @@ const authRouter = Router();
 // ----------------------------
 authRouter.post("/register", async (req, res) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, role, clubName } = req.body;
 
     if (!email || !password || !firstName || !lastName) {
       return res
@@ -18,14 +19,32 @@ authRouter.post("/register", async (req, res) => {
         .json({ message: "All fields are required to register" });
     }
 
+    // only member/admin are self-selectable; treasurer is granted by an admin.
+    const chosenRole = role === "admin" ? "admin" : "member";
+    if (chosenRole === "admin" && !clubName) {
+      return res
+        .status(400)
+        .json({ message: "A club name is required to register as an admin" });
+    }
+
     const user = await usersCollection.registerUser({
       email,
       password,
       firstName,
       lastName,
+      role: chosenRole,
     });
     if (!user) {
       return res.status(400).json({ message: "User already exists" });
+    }
+
+    // an admin registration also creates their club and attaches them to it.
+    if (chosenRole === "admin") {
+      const group = await groupsCollection.createGroup({
+        name: clubName,
+        createdBy: user.id,
+      });
+      await usersCollection.joinClub(user.id, group.id);
     }
 
     res.status(201).json({

@@ -35,6 +35,22 @@ export default function RegisterPage() {
           type: "password",
           placeholder: "Password",
         },
+        {
+          name: "role",
+          label: "I am registering as",
+          type: "select",
+          defaultValue: "member",
+          options: [
+            { value: "member", label: "Member" },
+            { value: "admin", label: "Admin (create a club)" },
+          ],
+        },
+        {
+          name: "clubName",
+          label: "Club name (admins only)",
+          type: "text",
+          placeholder: "Name your club",
+        },
       ]}
       onSuccess={() => navigate("/login")}
     >

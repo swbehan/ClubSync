@@ -12,6 +12,9 @@ export default function TreasurerDashboard() {
     total: 0,
     memberCount: 0,
   });
+  // bumped after a semester reset so every widget on the dashboard refetches
+  // (the club id is unchanged, so their own effects wouldn't fire otherwise).
+  const [refreshKey, setRefreshKey] = useState(0);
   const { user } = useUser();
 
   useEffect(() => {
@@ -28,7 +31,7 @@ export default function TreasurerDashboard() {
       }
     };
     loadStats();
-  }, [user?.groupId]);
+  }, [user?.groupId, refreshKey]);
 
   return (
     <Container className="px-5">
@@ -63,8 +66,10 @@ export default function TreasurerDashboard() {
           count={stats.silver}
           context="Includes all members approved with Silver tier dues."
         />
-        <DuesVerificationWidget previewLimit={5} />
-        <NewSemesterWidget />
+        <DuesVerificationWidget previewLimit={5} refreshSignal={refreshKey} />
+        <NewSemesterWidget
+          onSemesterStarted={() => setRefreshKey((key) => key + 1)}
+        />
       </Row>
     </Container>
   );
