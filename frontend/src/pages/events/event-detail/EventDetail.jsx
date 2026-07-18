@@ -86,7 +86,12 @@ export default function EventDetail() {
         <p>
           {event.type} · {event.location}
         </p>
-        <p>Date: {new Date(event.date).toLocaleDateString()}</p>
+        <p>
+          Date:{" "}
+          {new Date(event.date).toLocaleDateString(undefined, {
+            timeZone: "UTC",
+          })}
+        </p>
         <p>Required tier: {event.requiredTier}</p>
 
         <RSVPButton eventId={event._id} />

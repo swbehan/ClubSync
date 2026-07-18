@@ -66,7 +66,12 @@ export default function MyRsvps() {
             <p>
               {event.type} · {event.location}
             </p>
-            <p>Date: {new Date(event.date).toLocaleDateString()}</p>
+            <p>
+              Date:{" "}
+              {new Date(event.date).toLocaleDateString(undefined, {
+                timeZone: "UTC",
+              })}
+            </p>
           </div>
         </Link>
       ))}
