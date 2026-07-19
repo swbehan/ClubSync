@@ -1,15 +1,50 @@
-/* =========================== 
-     SIDEBAR OUTER CONTAINER
-   ========================= */
+/* ===========================================================================
+   SIDEBAR OUTER CONTAINER
+   =========================================================================== */
 .nav-bar-outer-container {
-  position: fixed;
-  z-index: 1050;
-  width: 250px;
-  height: 100vh;
-  background-color: #c1512d;
-  padding: var(--navbar-height) 1.5rem 1.5rem;
   display: flex;
   flex-direction: column;
+}
+
+/* --- desktop: fixed left rail -------------------------------------------- */
+@media (min-width: 992px) {
+  .nav-bar-outer-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1050;
+    width: 250px;
+    height: 100vh;
+    background-color: #c1512d;
+    padding: var(--navbar-height) 1.5rem 1.5rem;
+  }
+}
+
+/* --- mobile: compact toggle + sliding offcanvas -------------------------- */
+@media (max-width: 991.98px) {
+  .nav-bar-outer-container {
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    z-index: 1055;
+    padding: 0.5rem 0.75rem;
+    background-color: transparent;
+  }
+
+  /* the sliding dropdown: orange panel dropped a little below the top navbar */
+  .offcanvas.sidebar-offcanvas {
+    top: calc(var(--navbar-height) + 0.5rem);
+    height: calc(100vh - var(--navbar-height) - 0.5rem);
+    width: 250px;
+    background-color: #c1512d;
+    z-index: 1070;
+  }
+
+  /* black link text inside the mobile dropdown */
+  .sidebar-offcanvas .nav-item-link {
+    color: #2a2622;
+  }
 }
 
 /* =========================== 
@@ -43,7 +78,7 @@
   text-align: left;
   font-family: "Oswald", sans-serif;
   font-weight: 500;
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
   color: #ecf0f1;
   padding: 0.75rem 1rem;
   border-radius: 6px;

@@ -30,7 +30,7 @@ export default function SideBar() {
   return (
     <Navbar
       expand="lg"
-      className="nav-bar-outer-container position-fixed top-0 start-0 bottom-0 flex-column align-items-start"
+      className="nav-bar-outer-container flex-column align-items-start"
     >
       <Container className="flex-column align-items-start h-100 p-0">
         <Navbar.Toggle aria-controls="sidebar-nav" className="d-lg-none" />
@@ -39,7 +39,7 @@ export default function SideBar() {
           id="sidebar-nav"
           aria-labelledby="sidebar-label"
           placement="start"
-          className="h-100"
+          className="h-100 sidebar-offcanvas"
         >
           <Offcanvas.Body className="p-0 w-100">
             <Nav className="flex-column w-100">

@@ -20,7 +20,8 @@
    ========================= */
 .top-navbar-brand {
   font-family: "Racing Sans One", sans-serif;
-  font-size: 3.5rem;
+  /* scales fluidly with the viewport, capped at the desktop size */
+  font-size: clamp(1.75rem, 6vw, 3.5rem);
   color: #2a2622;
   margin-right: 6rem;
   margin-left: 1rem;
@@ -35,7 +36,7 @@
   color: #2a2622;
   padding: 0.25rem 0.9rem;
   border-radius: 6px;
-  font-size: 35px;
+  font-size: clamp(1.1rem, 3vw, 2.2rem);
   margin-right: 3rem;
 }
 
