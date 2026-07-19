@@ -124,6 +124,42 @@ After running `npm run seed`, log in with any seeded account. **All seeded accou
 
 All five demo accounts belong to the same club (**Chess Club — Fall 2026**, join code `482913`). The three member accounts have different dues states, which is handy for demonstrating event RSVP eligibility (a gold-tier event accepts the gold member and blocks the silver and no-dues members). You can also register a new **admin** to create your own club, or register a **member** and join a club with its join code.
 
+## Using the App
+
+### Getting into a club
+
+- **Register as an Admin** to start your own club — you name it at sign-up and become its owner. The club is created with a unique **join code** you share with members.
+- **Register as a Member** to join an existing club — after signing up, enter that club's join code on your dashboard to get on the roster.
+
+Everything you see (events, dues, members) is scoped to your club. Users never see another club's data.
+
+### The dues flow
+
+1. A **member** submits dues from their dashboard: they pick a tier (**silver** or **gold**) and enter a **payment reference** (e.g. a Venmo confirmation or check number). Their status becomes **pending**.
+2. The submission lands in the **treasurer's** review queue. The treasurer opens **Dues Review**, sees each pending submission with its tier and payment reference, and **approves** or **denies** it. A denial **requires a note** explaining why.
+3. On **approval**, the member's dues status flips to **approved** and their tier is locked in — this is what unlocks tiered events. On **denial**, the member sees the reason and can resubmit.
+4. A member can **withdraw** their own submission while it's still pending (in case they made a mistake) — after that it's the treasurer's to decide.
+5. The treasurer dashboard shows a **running total of collected dues, broken down by tier**, so there's no manual tallying.
+
+### The events flow
+
+1. An **admin** creates an event (name, type, date, location) and sets the **required dues tier**: `none`, `silver`, or `gold`.
+2. The event shows up for that club's members on their dashboard and the Events page.
+3. A **member** RSVPs from the event. Eligibility is checked automatically:
+   - **`none`** events are open to everyone.
+   - **tiered** events require **approved** dues **at or above** the required tier. If the member isn't eligible, they get a clear message telling them what's needed (e.g. "This event requires the gold tier") instead of a silent failure.
+4. The **admin** can view each event's **RSVP list** to plan logistics, and can **edit** or **cancel** (delete) an event.
+
+### Appointing treasurers and admins
+
+- Treasurer is **never self-selected** at registration — an **admin** grants it.
+- On the admin's **Club Members** page, the admin sees the club roster and can change any member's role to **treasurer** or **admin**. A club can have more than one admin.
+- Role changes are scoped to the admin's own club — an admin can't touch members of a club they don't run.
+
+### Starting a new semester
+
+- A **treasurer** can start a new semester for their club. This keeps the **same club** but issues a **fresh join code** and **clears the roster**: members are removed and must re-join with the new code, while the admin/treasurer stay on to run the term. Pending dues from the old term are archived. It's a clean slate for the new semester, not a brand-new club.
+
 ## Available Scripts
 
 **Backend (project root):**
@@ -142,6 +178,17 @@ All five demo accounts belong to the same club (**Chess Club — Fall 2026**, jo
 | `npm run dev`   | Start the Vite dev server   |
 | `npm run build` | Build the production bundle |
 | `npm run lint`  | Lint the frontend           |
+
+## Known Limitations & Future Work
+
+Things we scoped out for this version but would build next:
+
+- **One club per member.** A user belongs to a single club at a time. We'd like a member to join and switch between **multiple clubs** from one account (e.g. a shared "my clubs" switcher), which would mean moving from a single `groupId` on the user to a membership relationship.
+- **No dues history.** We only keep each member's _current_ dues state; starting a new semester archives the old term rather than exposing it. A per-semester **history / receipts view** would help treasurers with reporting.
+- **No notifications.** Approvals, denials, and semester resets are only visible in-app. **Email notifications** would close the loop so members don't have to keep checking.
+- **Manual payment references.** Members type in a Venmo/check reference that the treasurer eyeballs. A real **payment integration** (Stripe/Venmo) would remove the manual verification step entirely.
+- **No event capacity or waitlists.** Events currently accept unlimited RSVPs.
+- **No audit log.** Role changes and dues decisions aren't recorded beyond the resulting state; an audit trail would make hand-offs between officers safer.
 
 ## AI Use Disclosure
 
@@ -163,6 +210,23 @@ I also gave it the project proposal so that the agent understood the role I was 
 - **Design decisions** (role hierarchy, event/dues eligibility rules, keeping seeded data consistent) were talked through and decided by mex.
 
 I reviewed and understood the final code and architectural choices for my portion.
+
+- **Sean**
+
+I used an AI assistant (Claude, by Anthropic) during development, primarily as a **standard and methodology checker rather than a code generator**.
+
+**Initial Prompt / Methodology:** I set up the collaboration explicitly at the start with the following instruction:
+
+> You are an experienced full-stack developer with vast knowledge of React, Vite, Express, Node, CSS, Babel, Passport, and the cycle of a SPA application in comparison to a 3-tier application. I want you to act as a TEACHER to me in the sense that you are never going to give me the answer. You are going to allow me to implement my own thinking and then if I ask you for a review, you are going to give me bullet points as to how it could be better. These bullet points will be simplitic hints that push me in the right direction instead of outwright giving me the answer. You are going to keep in mind that overengineering simple tasks will overcomplicate a codebase and expose error.
+
+**Why This Was Vital for Project 3:**
+The jump in codebase material and architectural complexity from Project 2 to Project 3 was massive. By restricting the AI from writing code and forcing it to give me 1–6 bullet points instead, I was able to focus on one thing at a time. This rigorous process verified that every JSX component, route, `useEffect`, or `useState` hook I built was efficient and secure, ensuring the ground I stood on was solid for future iteration.
+
+**How I Used It:**
+
+- **Self-Authored Core Logic:** I wrote 100% of my code. The assistant acted purely as a pedagogical auditor to review my drafts, catch edge cases, and ensure I wasn't overcomplicating simple tasks.
+- **Concepts Over Boilerplate:** It helped me think through full-stack architecture—specifically how state synchronization flows across the lifecycle of a Single Page Application (SPA) vs. a traditional 3-tier architecture.
+- **Refactoring & Optimization:** When my implementation was unoptimized, I used the AI's structural critiques to manually rewrite my code, fixing bugs like template literal errors, bracket mismatches, or inefficient query structures.
 
 ## License
 
