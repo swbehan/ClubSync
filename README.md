@@ -11,6 +11,15 @@ ClubSync replaces the manual Google Forms + spreadsheet workflow that student cl
 
 CS 5610 / Web Development — Northeastern University · [Class Link](https://johnguerra.co/classes/webDevelopment_online_summer_2026/)
 
+## Live Site 
+Deployed on Render using its free tier service· [ClubSync Web App Link](https://clubsync-lfuo.onrender.com/)
+
+## Video Demonstration
+Demonstration video briefly explaining how to use ClubSync, from a user perspective and how it works behind the scenes · [YouTube Video Link](https://www.youtube.com/watch?v=1FwJAOmcqcg)
+
+## Project Slides
+A Presentation that outlines how the development of the project went (what we struggled on and what we learned) · [Google Slides Link](https://docs.google.com/presentation/d/1DyRUH6mBH0AyMOU-kNr2XrI8XPQqQDpaqNsjXyMaoMo/edit?usp=sharing)
+
 ## Project Objective
 
 Clubs waste time every semester copying names into spreadsheets and cross-checking who has paid before letting members into events. ClubSync centralizes this into one app. It is **multi-club**: each club is independent, with its own members, events, and dues, and users only ever see their own club's data.
