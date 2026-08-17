@@ -43,6 +43,9 @@ function UsersCollection({ collectionName = "users" } = {}) {
         phoneNumber,
         duesStatus: DUES_STATUS.NOT_SUBMITTED,
         groupId: null,
+        // REVIEW: this is the string "null", not the null value used right above
+        // for groupId — was that intentional? A strict `=== null` check on
+        // duesTier elsewhere in the codebase would silently fail against this.
         duesTier: "null",
         duesAmount: null,
         discount: null,
