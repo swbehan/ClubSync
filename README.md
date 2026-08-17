@@ -271,6 +271,10 @@ Things we scoped out for this version but would build next:
 
 ## AI Use Disclosure
 
+<!-- REVIEW: "-Julian" reads like a signature but it's placed before the section
+     it's attributing, not after (compare to "- Sean" further down, which
+     correctly follows his section). Worth moving below the paragraph it belongs to. -->
+
 -Julian
 
 I used an AI assistant (Claude Code, by Anthropic) during development, primarily as a **mentor/tutor rather than a code generator**.
