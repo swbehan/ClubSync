@@ -1,3 +1,5 @@
+<!-- REVIEW: the containing folder is named "desgin" — looks like a typo for "design". -->
+
 # ClubSync — Design Document
 
 **Team:** Sean Behan, Julian Leonhardt

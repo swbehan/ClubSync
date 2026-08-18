@@ -14,6 +14,8 @@ const ROLE_RANK = { member: 1, treasurer: 2, admin: 3 };
 // requireRole("treasurer") RETURNS a middleware that allows treasurer and above.
 // The inner function is what Express actually runs per request; it "remebers"
 // minRole via closure
+// REVIEW: typo "remebers" -> "remembers"; also the 401 message below has a
+// trailing space ("Not authenticated ") that doesn't match the one on line 8.
 
 export const requireRole = (minRole) => {
   return (req, res, next) => {

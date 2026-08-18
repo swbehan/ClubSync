@@ -54,6 +54,8 @@ export default function GroupWidget() {
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setError(data.message ?? "Could not leave the club.");
+        // REVIEW: unlike the line above, this has no fallback — if res.json()
+        // fails and data is {}, this shows a "danger" toast with undefined text.
         showToast(data.message, "danger");
         return;
       }
